@@ -1,0 +1,11 @@
+name = "GenomeAI"
+uuid = "9c66ba0c-a63e-48dc-a716-7d97e2ce5f4d"
+authors = ["KwatMDPhD"]
+version = "0.1.0"
+
+[deps]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+Test = "1"
+julia = "1.9"
