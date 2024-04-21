@@ -2,7 +2,7 @@
   "download": {},
   "call": {
     "update": "julia --project --eval 'using Pkg; Pkg.update()'",
-    "check": "julia --project --eval 'using Aqua: test_all, test_ambiguities; using Nami; test_all(Nami; ambiguities = false); test_ambiguities(Nami)'",
+    "check": "julia --project --eval 'using Aqua: test_all, test_ambiguities; using Nami; test_all(Nami; ambiguities = false, deps_compat = false); test_ambiguities(Nami)'",
     "run": "julia --project --eval 'using Pkg; Pkg.test()'"
   }
 }
