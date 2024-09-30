@@ -4,7 +4,9 @@ using Nami
 
 using VCF: DB, count_impact, get_variant, make_variant_table!
 
-const UP = joinpath("public", "upload"
+# ---- #
+
+const UP = joinpath("public", "upload")
 
 if !isdir(UP)
 
@@ -12,19 +14,22 @@ if !isdir(UP)
 
 end
 
-const PA = joinpath(UP, "nami.db")
+# ---- #
+
+const PA = joinpath(UP, "vcf.db")
+
+# ---- #
 
 @app begin
-
-    @out vc = ""
 
     @out db = DB(PA)
 
     @event up begin
 
-        vc = mv(fileuploads["path"], joinpath(UP, fileuploads["name"]); force = true)
-
-        make_variant_table!(db, vc)
+        make_variant_table!(
+            db,
+            mv(fileuploads["path"], joinpath(UP, fileuploads["name"]); force = true),
+        )
 
     end
 
@@ -34,49 +39,58 @@ const PA = joinpath(UP, "nami.db")
 
     # ---- #
 
-    @in rs = ""
+    @out rs = ""
+
+    @in ri = 0
 
     @in cv = false
 
     # ---- #
 
-    @in va = Dict{String, Union{Int, String}}()
+    @in va = Dict{Symbol, Union{Int, AbstractString}}()
 
     @out co = ""
 
     @out po = 0
 
-    @out cl = ""
-
     @out a0 = ""
+
+    # TODO: Report more interpretable text
+    @out qu = 0
+
+    @out cl = ""
 
     @out a1 = ""
 
     @out a2 = ""
 
-    @out ip = ""
+    @out an = ""
 
-    @out ef = ""
+    @out ip = ""
 
     @onchange va begin
 
-        rs = va["vcf_id"]
+        co = va[:chrom]
 
-        co = va["vcf_chrom"]
+        po = va[:pos]
 
-        po = va["vcf_pos"]
+        rs = va[:id]
 
-        cl = va["gene"]
+        ri = parse(Int, rs[3:end])
 
-        a0 = va["vcf_ref"]
+        a0 = va[:ref]
 
-        a1 = va["allele_1"]
+        qu = va[:qual]
 
-        a2 = va["allele_2"]
+        cl = va[:gene]
 
-        ip = va["impact"]
+        a1 = va[:allele_1]
 
-        ef = va["effect"]
+        a2 = va[:allele_2]
+
+        an = va[:annotation]
+
+        ip = va[:impact]
 
     end
 
@@ -86,7 +100,7 @@ const PA = joinpath(UP, "nami.db")
 
         @info "Searching variant $rs"
 
-        va = get_variant(db, parse(Int, rs[3:end]))
+        va = get_variant(db, ri)
 
     end
 
@@ -106,7 +120,7 @@ const PA = joinpath(UP, "nami.db")
 
     @out uh = 0
 
-    @out va_ = Dict{String, Union{Int, String}}[]
+    @out va_ = Dict{Symbol, Union{Int, AbstractString}}[]
 
     @out vb_ = String[]
 
@@ -124,6 +138,7 @@ const PA = joinpath(UP, "nami.db")
 
     # ---- #
 
+    # TODO: Hard-code in view
     @out ch_ = [
         "1",
         "2",
@@ -176,18 +191,21 @@ const PA = joinpath(UP, "nami.db")
 
 end
 
+# TODO: Handle not-found cases
+
 function _view_variant()
 
     join((
         xelem(:h4, "Variant = {{rs}}"),
         xelem(:p, "Chromosome = {{co}}"),
         xelem(:p, "Position = {{po}}"),
-        xelem(:p, "Closest gene = {{cl}}"),
+        xelem(:p, "Quality = {{qu}}"),
         xelem(:p, "Reference allele = {{a0}}"),
         xelem(:p, "Your allele 1 = {{a1}}"),
         xelem(:p, "Your allele 2 = {{a2}}"),
+        xelem(:p, "Annotation = {{an}}"),
         xelem(:p, "Impact = {{ip}}"),
-        xelem(:p, "Effect = {{ef}}"),
+        xelem(:p, "Closest gene = {{cl}}"),
     ))
 
 end
@@ -203,7 +221,7 @@ function _view_gene()
         xelem(
             :li,
             @recur("vr in va_"),
-            quasar(:btn; label! = "vr.vcf_id", @click("ta = 't1'; va = vr")),
+            quasar(:btn; label! = "vr.id", @click("ta = 't1'; va = vr")),
         ),
     ))
 
@@ -220,7 +238,7 @@ function _view_region()
         xelem(
             :li,
             @recur("vr in va_"),
-            quasar(:btn; label! = "vr.vcf_id", @click("ta = 't1'; va = vr")),
+            quasar(:btn; label! = "vr.id", @click("ta = 't1'; va = vr")),
         ),
     ))
 
@@ -229,7 +247,7 @@ end
 function view()
 
     [
-        xelem(:h1, "🧭 Nami"),
+        xelem(:h1, "🌊 Nami"),
         quasar(:separator),
         xelem(:h4, "🔧 Setting"),
         quasar(
@@ -240,7 +258,8 @@ function view()
             @on(:uploaded, :up),
             maxfiles = 1,
         ),
-        xelem(:p, "📃 VCF file = {{vc}}"),
+        # TODO
+        xelem(:p, "🗃️ VCF database status = {{}}"),
         quasar(:separator),
         xelem(:h4, "🔬 Search"),
         quasar(
@@ -258,7 +277,7 @@ function view()
                 quasar(
                     Symbol("tab-panel"),
                     [
-                        quasar(:input; label = "RSID", @bind(:rs)),
+                        quasar(:input; label = "RSID", prefix = "rs", @bind(:ri)),
                         quasar(:btn; label = "🤩 Search", @click(:cv)),
                         _view_variant(),
                     ];
@@ -292,4 +311,5 @@ function view()
 
 end
 
+# TODO: Use custom layout with favicon, title, and other goodies
 @page "/" view
