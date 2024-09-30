@@ -24,6 +24,7 @@ const PA = joinpath(UP, "vcf.db")
 
     @out db = DB(PA)
 
+    # TODO: Show reading status
     @event up begin
 
         make_variant_table!(
