@@ -1,4 +1,4 @@
-🧬🌊🧭
+🧬
 
 [Install `julia`](https://julialang.org/downloads).
 
