@@ -20,4 +20,4 @@ julia --project --eval "using GenieFramework; Genie.loadapp(); up(; async = fals
 
 ---
 
-Made by https://github.com/KwatMDPhD/Kata.jl 🔴
+Made by [Kata](https://github.com/KwatMDPhD/Kata.jl) 🥋
