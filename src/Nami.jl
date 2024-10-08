@@ -151,7 +151,7 @@ function _make_variant_dictionary(ro)
 
     if startswith(va[:id], "Manta")
 
-        va[:annotation] = va[:impact] = "TODO Manta"
+        va[:annotation] = va[:impact] = "Manta"
 
     else
 
