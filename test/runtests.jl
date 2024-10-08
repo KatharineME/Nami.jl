@@ -1,4 +1,4 @@
-using Nami
+using Nami1
 
 using Test: @test
 
@@ -48,7 +48,7 @@ VCF.count_impact(VCF.get_variant(DB, 1, 0, 24000))
 
 # ---- #
 
-const NA = VCF.DB(joinpath(dirname(pkgdir(VCF)), "Nami.jl", "public", "upload", "vcf.db"))
+const NA = VCF.DB(joinpath(dirname(pkgdir(VCF)), "Nami1.jl", "public", "upload", "vcf.db"))
 
 VCF.get_variant(NA, 11489793)
 

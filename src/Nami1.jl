@@ -1,4 +1,4 @@
-module Nami
+module Nami1
 
 using CodecZlib: GzipDecompressorStream
 

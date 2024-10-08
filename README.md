@@ -3,11 +3,11 @@
 [Install `julia`](https://julialang.org/downloads).
 
 ```bash
-git clone https://github.com/KatharineME/Nami.jl
+git clone https://github.com/KatharineME/Nami1.jl
 ```
 
 ```bash
-cd Nami.jl
+cd Nami1.jl
 ```
 
 ```bash

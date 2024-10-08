@@ -1,5 +1,4 @@
-using Nami
-
+using Nami1
 
 @genietools
 
@@ -249,7 +248,7 @@ end
 function view()
 
     [
-        xelem(:h1, "🌊 Nami"),
+        xelem(:h1, "🌊 Nami1"),
         quasar(:separator),
         xelem(:h4, "🔧 Setting"),
         quasar(
