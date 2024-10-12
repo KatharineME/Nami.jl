@@ -1,0 +1,16 @@
+name = "Nami"
+uuid = "6c48f768-7fde-402e-8974-986e6a8351fa"
+authors = ["KatharineME"]
+version = "0.1.0"
+
+[deps]
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+GenieFramework = "a59fdf5c-6bf0-4f5d-949c-a137c9e2f353"
+SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+CodecZlib = "0.7.6"
+GenieFramework = "2.4.0"
+SQLite = "1.6.1"
+Test = "1.11.0"
