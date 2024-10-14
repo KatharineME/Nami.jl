@@ -11,12 +11,24 @@ cd Nami.jl
 ```
 
 ```bash
-julia --project --eval "using Pkg; Pkg.instantiate()"
+julia --project
 ```
 
-```bash
-julia --project --eval "using GenieFramework; Genie.loadapp(); up()"
+```julia
+using Pkg; Pkg.instantiate()
 ```
+
+```julia
+using GenieFramework; Genie.loadapp(); up()
+```
+
+Open http://127.0.0.1:8000.
+
+Upload Nami.jl/data/thin.1M.vcf.gz.
+
+Wait a minute for the database to build.
+
+Search the suggested variant or gene, and any region.
 
 ---
 
