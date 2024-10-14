@@ -139,7 +139,7 @@ end
 
 function get_variant(db, id)
 
-    va = map(_make_variant_dictionary, execute(
+    va_ = map(_make_variant_dictionary, execute(
         db,
         """
         SELECT
@@ -151,9 +151,13 @@ function get_variant(db, id)
         """,
     ))
 
-    if isempty(va)
+    if isempty(va_)
 
         Dict{Symbol, Union{Int, AbstractString}}()
+
+    else
+
+        va_[1]
 
     end
 

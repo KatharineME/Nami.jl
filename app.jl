@@ -145,8 +145,6 @@ end
 
 # ---- #
 
-function view_variant_2() end
-
 function _view_variant()
 
     join((
@@ -275,7 +273,7 @@ function view()
                                 outlined = true,
                                 bg__color = "grey-2",
                                 label = "Symbol",
-                                hint = "ASB5",
+                                hint = "UBR3",
                                 clearable = true,
                                 @bind(:sy)
                             ),

@@ -28,7 +28,7 @@ Upload Nami.jl/data/thin.1M.vcf.gz.
 
 Wait a minute for the database to build.
 
-Search the suggested variant or gene, and any region.
+Search the suggested variant or gene, and any region larger than 1 million bases to get hits.
 
 ---
 
