@@ -24,11 +24,11 @@ using GenieFramework; Genie.loadapp(); up()
 
 Open http://127.0.0.1:8000.
 
-Upload Nami.jl/data/thin.1M.vcf.gz.
+Upload `Nami.jl/data/thin.1M.vcf.gz`.
 
-Wait a minute for the database to build.
+Wait a minute for the variant database to build.
 
-Search the suggested variant or gene, and any region larger than 1 million bases to get hits.
+Search the suggested variant or gene and any region larger than one million bases to get hits.
 
 ---
 
