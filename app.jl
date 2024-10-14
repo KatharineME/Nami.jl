@@ -195,13 +195,9 @@ function _view_region()
 
 end
 
-function view()
+function _view_uploader()
 
-    [
-        xelem(:h1, "🌊"; class = "q-pa-lg text-center"),
-        xelem(:h1, "Nami"; class = "q-pa-lg text-center"),
-        xelem(:h6, "Window to your genome"; class = "q-pb-lg text-center"),
-        quasar(:separator),
+    join((
         xelem(:h4, "Upload your VCF"; class = "q-pt-lg text-center"),
         xelem(
             :div,
@@ -220,7 +216,13 @@ function view()
             );
             class = "q-pa-lg",
         ),
-        quasar(:separator),
+    ))
+
+end
+
+function _view_tab()
+
+    join((
         xelem(:h4, "Search by"; class = "q-pa-lg text-center"),
         quasar(
             :tabs,
@@ -234,6 +236,13 @@ function view()
             indicator__color = "teal-13",
             @bind(:ta),
         ),
+    ))
+
+end
+
+function _view_tab_panel()
+
+    join((
         xelem(
             :div,
             quasar(
@@ -338,6 +347,21 @@ function view()
             );
             class = "text-center",
         ),
+    ))
+
+end
+
+function view()
+
+    [
+        xelem(:h1, "🌊"; class = "q-pa-lg text-center"),
+        xelem(:h1, "Nami"; class = "q-pa-lg text-center"),
+        xelem(:h6, "Window to your genome"; class = "q-pb-lg text-center"),
+        quasar(:separator),
+        _view_uploader(),
+        quasar(:separator),
+        _view_tab(),
+        _view_tab_panel(),
     ]
 
 end
