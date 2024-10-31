@@ -1,6 +1,6 @@
 module Nami
 
-using SQLite: DB
+using SQLite: DB, drop!
 
 using SQLite.DBInterface: execute
 
@@ -24,11 +24,15 @@ end
 
 function make_variant_table!(db, vc)
 
+    ta = "variant"
+
+    drop!(db, ta; ifexists = true)
+
     execute(
         db,
         """
         CREATE TABLE IF NOT EXISTS
-        variant
+        $ta
         (
         chrom TEXT,
         pos INTEGER,
@@ -156,6 +160,8 @@ function get_variant(db, id)
         Dict{Symbol, Union{Int, AbstractString}}()
 
     else
+
+        @info va_[1]
 
         va_[1]
 

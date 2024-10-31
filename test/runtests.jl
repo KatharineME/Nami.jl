@@ -28,7 +28,7 @@ const DA = Nami.DB(PA)
 
 if RE
 
-    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "thin.10000000.vcf.gz"))
+    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "thin.1M.vcf.gz"))
 
 end
 
@@ -36,23 +36,19 @@ columns(DA, "variant")
 
 # ---- #
 
-Nami.get_variant(DA, 10916692)
+re = Nami.get_variant(DA, 10916692)
 
 # ---- #
 
-Nami.get_variant(NA, 1)
+re = Nami.get_variant(DA, "UBR3")
 
 # ---- #
 
-Nami.get_variant(DA, "ASB5")
+re = Nami.get_variant(DA, 1, 0, 24000000)
 
 # ---- #
 
-Nami.get_variant(DA, 1, 0, 24000000)
-
-# ---- #
-
-Nami.get_variant(NA, "MT", 0, 100000)
+re = Nami.get_variant(NA, "MT", 0, 100000)
 
 # ---- #
 

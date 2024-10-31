@@ -1,204 +1,3 @@
-using Nami
-
-include("view.jl")
-
-@genietools
-
-# ---- #
-
-const UP = joinpath("public", "upload")
-
-if !isdir(UP)
-
-    mkdir(UP)
-
-end
-
-const DA = joinpath(UP, "variant.db")
-
-# ---- #
-
-@app begin
-
-    @in sr = false
-
-    # ---- #
-
-    db = Nami.DB(DA)
-
-    @event up begin
-
-        Nami.make_variant_table!(
-            db,
-            mv(fileuploads["path"], joinpath(UP, fileuploads["name"]); force = true),
-        )
-
-        sr = true
-
-        @info "sr" sr
-
-    end
-
-    # ---- #
-
-    @in ta = ""
-
-    # ---- #
-
-    @out em = false
-
-    @out sh = false
-
-    # ---- #
-
-    @out rs = ""
-
-    @in ri = 0
-
-    @in cv = false
-
-    @in va = Dict{Symbol, Union{Int, AbstractString}}()
-
-    @out co = ""
-
-    @out cl = ""
-
-    @out po = 0
-
-    @out a0 = ""
-
-    @out a1 = ""
-
-    @out a2 = ""
-
-    @out an = ""
-
-    @out ip = ""
-
-    # ---- #
-
-    @in sy = ""
-
-    @in cg = false
-
-    @out mi = 0
-
-    @out lo = 0
-
-    @out me = 0
-
-    @out hi = 0
-
-    @out va_ = Dict{Symbol, Union{Int, AbstractString}}[]
-
-    # ---- #
-
-    @out ch_ = vcat(string.(collect(range(1, 22))), ["X", "Y", "MT"])
-
-    @in ch = ""
-
-    @in st = 0
-
-    @in en = 0
-
-    @in cr = false
-
-    # ---- #
-
-    @onchange va begin
-
-        @info "" va
-
-        if va == Dict{Symbol, Union{Int64, AbstractString}}()
-
-            em = true
-
-        else
-
-            co = va[:chrom]
-
-            po = va[:pos]
-
-            rs = va[:id]
-
-            ri = parse(Int, rs[3:end])
-
-            a0 = va[:ref]
-
-            cl = va[:gene]
-
-            a1 = va[:allele_1]
-
-            a2 = va[:allele_2]
-
-            an = va[:effect]
-
-            ip = va[:impact]
-
-            sh = true
-
-        end
-
-    end
-
-    @onchange ri, sy, ch, st, en begin
-
-        em = false
-
-        sh = false
-
-    end
-
-    @onbutton cv begin
-
-        va = Nami.get_variant(db, ri)
-
-    end
-
-    @onbutton cg begin
-
-        va_ = Nami.get_variant(db, sy)
-
-        im_ = Nami.count_impact(va_)
-
-        if im_ == (0, 0, 0, 0)
-
-            em = true
-
-        else
-
-            mi, lo, me, hi = im_
-
-            sh = true
-
-        end
-
-    end
-
-    @onbutton cr begin
-
-        va_ = Nami.get_variant(db, ch, st, en)
-
-        im_ = Nami.count_impact(va_)
-
-        if im_ == (0, 0, 0, 0)
-
-            em = true
-
-        else
-
-            mi, lo, me, hi = im_
-
-            sh = true
-
-        end
-
-    end
-
-end
-
-# ---- #
-
 function _view_variant()
 
     join((
@@ -297,21 +96,25 @@ end
 
 function _view_tab()
 
-    join((
-        xelem(:h4, "Search by"; class = "q-pa-lg text-center"),
-        quasar(
-            :tabs,
-            [
-                quasar(:tab, xelem(:h6, "Variant"); name = "t1"),
-                quasar(:tab, xelem(:h6, "Gene"); name = "t2"),
-                quasar(:tab, xelem(:h6, "Region"); name = "t3"),
-            ];
-            align = "justify",
-            no__caps = true,
-            indicator__color = "teal-13",
-            @bind(:ta),
-        ),
-    ))
+    join((xelem(
+        :div,
+        [
+            xelem(:h4, "Search by"; class = "q-pa-lg text-center"),
+            quasar(
+                :tabs,
+                [
+                    quasar(:tab, xelem(:h6, "Variant"); name = "t1"),
+                    quasar(:tab, xelem(:h6, "Gene"); name = "t2"),
+                    quasar(:tab, xelem(:h6, "Region"); name = "t3"),
+                ];
+                align = "justify",
+                no__caps = true,
+                indicator__color = "teal-13",
+                @bind(:ta)
+            ),
+        ],
+        @showif(:sr)
+    )))
 
 end
 
@@ -421,11 +224,22 @@ function _view_tab_panel()
                 animated = true,
             );
             class = "text-center",
+            @showif(:sr)
         ),
     ))
 
 end
 
-# ---- #
+function view()
 
-@page "/" view
+    [
+        xelem(:h1, "Nami"; class = "q-pa-lg text-center"),
+        xelem(:h6, "Window to your genome"; class = "q-pb-lg text-center"),
+        quasar(:separator),
+        _view_uploader(),
+        quasar(:separator),
+        _view_tab(),
+        _view_tab_panel(),
+    ]
+
+end
