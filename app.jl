@@ -298,7 +298,7 @@ end
 function _view_tab()
 
     join((
-        xelem(:h4, "Search by"; class = "q-pa-lg text-center"),
+        xelem(:h4, "Search by"; class = "q-pa-lg text-center", @showif(:sr)),
         quasar(
             :tabs,
             [
@@ -310,6 +310,7 @@ function _view_tab()
             no__caps = true,
             indicator__color = "teal-13",
             @bind(:ta),
+            @showif(:sr)
         ),
     ))
 
@@ -421,6 +422,7 @@ function _view_tab_panel()
                 animated = true,
             );
             class = "text-center",
+            @showif(:sr)
         ),
     ))
 
