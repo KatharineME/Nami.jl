@@ -1,3 +1,7 @@
+const CO =
+    (modifier = "blue-grey", low = "yellow-8", moderate = "deep-orange", high = "red-8")
+
+
 function _view_variant()
 
     join((
@@ -21,6 +25,52 @@ function _view_variant()
 
 end
 
+function _view_impact(nu, na, co)
+
+    quasar(
+        :card,
+        join((
+            xelem(:h1, "{{$nu}}"; class = "q-pa-sm text-white"),
+            xelem(:h4, "$na"; class = "q-pb-md text-white"),
+        ));
+        class = "bg-$co col",
+        style = "max-width:160px;",
+    )
+
+end
+
+function _view_impacts()
+
+    xelem(
+        :div,
+        [
+            _view_impact("im_[0]", "Modifier", CO[Symbol("modifier")]),
+            _view_impact("im_[1]", "Low", CO[Symbol("low")]),
+            _view_impact("im_[2]", "Moderate", CO[Symbol("moderate")]),
+            _view_impact("im_[3]", "High", CO[Symbol("high")]),
+        ];
+        class = "row justify-evenly q-pa-lg",
+    )
+
+end
+
+function _view_variant_buttons()
+
+    xelem(
+        :div,
+        @recur("vr in va_"),
+        quasar(
+            :btn;
+            label! = "vr.id",
+            color! = "co_[vr.impact]",
+            size = "md",
+            class = "q-ma-md",
+            @click("ta = 't1'; va = vr")
+        ),
+    )
+
+end
+
 function _view_gene()
 
     join((
@@ -29,15 +79,8 @@ function _view_gene()
             :div,
             [
                 xelem(:h4, "Gene {{sy}}"; class = "q-pa-lg"),
-                xelem(:h6, "Number of Modifier variants = {{mi}}"),
-                xelem(:h6, "Number of Low variants = {{lo}}"),
-                xelem(:h6, "Number of Moderate variants = {{me}}"),
-                xelem(:h6, "Number of High variants = {{hi}}"),
-                xelem(
-                    :li,
-                    @recur("vr in va_"),
-                    quasar(:btn; label! = "vr.id", @click("ta = 't1'; va = vr")),
-                ),
+                _view_impacts(),
+                _view_variant_buttons(),
             ],
             @showif(:sh)
         ),
@@ -53,15 +96,8 @@ function _view_region()
             :div,
             [
                 xelem(:h4, "Region {{ch}}:{{st}}-{{en}}"; class = "q-pa-lg"),
-                xelem(:h6, "Number of Modifier variants = {{mi}}"),
-                xelem(:h6, "Number of Low variants = {{lo}}"),
-                xelem(:h6, "Number of Moderate variants = {{me}}"),
-                xelem(:h6, "Number of High variants = {{hi}}"),
-                xelem(
-                    :li,
-                    @recur("vr in va_"),
-                    quasar(:btn; label! = "vr.id", @click("ta = 't1'; va = vr")),
-                ),
+                _view_impacts(),
+                _view_variant_buttons(),
             ],
             @showif(:sh)
         ),
@@ -72,7 +108,7 @@ end
 function _view_uploader()
 
     join((
-        xelem(:h4, "Upload your VCF"; class = "q-pt-lg text-center"),
+        xelem(:h4, "Upload your VCF"; class = "q-pt-lg text-center", @showif(:su)),
         xelem(
             :div,
             quasar(
@@ -81,40 +117,60 @@ function _view_uploader()
                 maxfiles = 1,
                 url! = "'/____/upload/' + channel_",
                 autoupload = true,
-                @on("uploaded", :up),
                 flat = true,
                 bordered = true,
                 color = "grey-2",
                 text__color = "black",
                 style = "max-width: 60%; width: 95%; margin: 0 auto",
+                @on("uploaded", :up),
             );
             class = "q-pa-lg",
+            @showif(:su)
         ),
     ))
 
 end
 
-function _view_tab()
+function _view_vcf_path()
 
     join((xelem(
         :div,
         [
-            xelem(:h4, "Search by"; class = "q-pa-lg text-center"),
+            xelem(:h6, "Using VCF: {{fi}}"; class = "q-pa-sm text-center col-3"),
             quasar(
-                :tabs,
-                [
-                    quasar(:tab, xelem(:h6, "Variant"); name = "t1"),
-                    quasar(:tab, xelem(:h6, "Gene"); name = "t2"),
-                    quasar(:tab, xelem(:h6, "Region"); name = "t3"),
-                ];
-                align = "justify",
-                no__caps = true,
-                indicator__color = "teal-13",
-                @bind(:ta)
+                :btn;
+                label = "Change",
+                size = "md",
+                color = "grey",
+                class = "left-align col-2",
+                @click("su = true; ss = false")
             ),
-        ],
-        @showif(:sr)
+        ];
+        class = "row flex-center",
+        @showif(:ss)
     )))
+
+end
+
+function _view_tab()
+
+    join((
+        xelem(:h1, "Search"; class = "q-pa-lg text-center", @showif(:ss)),
+        quasar(
+            :tabs,
+            [
+                quasar(:tab, xelem(:h4, "Variant"); name = "t1"),
+                quasar(:tab, xelem(:h4, "Gene"); name = "t2"),
+                quasar(:tab, xelem(:h4, "Region"); name = "t3"),
+            ];
+            align = "justify",
+            no__caps = true,
+            active__bg__color = "teal-1",
+            indicator__color = "teal-13",
+            @bind(:ta),
+            @showif(:ss)
+        ),
+    ))
 
 end
 
@@ -224,7 +280,7 @@ function _view_tab_panel()
                 animated = true,
             );
             class = "text-center",
-            @showif(:sr)
+            @showif(:ss)
         ),
     ))
 
@@ -234,10 +290,9 @@ function view()
 
     [
         xelem(:h1, "Nami"; class = "q-pa-lg text-center"),
-        xelem(:h6, "Window to your genome"; class = "q-pb-lg text-center"),
-        quasar(:separator),
+        xelem(:h6, "Window to your genome"; class = "q-pb-lg text-center", @showif(:su)),
         _view_uploader(),
-        quasar(:separator),
+        _view_vcf_path(),
         _view_tab(),
         _view_tab_panel(),
     ]
