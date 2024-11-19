@@ -8,7 +8,7 @@
     --st-shadow-color: #00000061;
   }
   :root.stipple-core{
-    --st-dashboard-bg-0: #eff2f5;
+    --st-dashboard-bg-0: #ffffff;
     --st-dashboard-bg-1: #ffffff;
     --st-dashboard-bg-2: #ffffff;
   }
@@ -29,7 +29,7 @@
   }
   :root.stipple-core h1, :root.stipple-core h2, :root.stipple-core h3, :root.stipple-core h4, :root.stipple-core h5, :root.stipple-core h6{
     color: var(--st-text-1);
-    font-weight: 600;
+    font-weight: 400;
   }
   :root.stipple-core .st-module{
     background: var(--st-dashboard-bg-1);

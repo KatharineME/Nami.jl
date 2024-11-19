@@ -53,7 +53,7 @@ const DA = joinpath(UP, "variant.db")
 
     @out em = false
 
-    @out sh = false
+    @out sr = false
 
     # ---- #
 
@@ -107,18 +107,7 @@ const DA = joinpath(UP, "variant.db")
 
     # ---- #
 
-    @out co_ = Dict(
-        "MODIFIER" => "blue-grey",
-        "LOW" => "yellow-8",
-        "MODERATE" => "deep-orange",
-        "HIGH" => "red-8",
-    )
-
-    # ---- #
-
     @onchange va begin
-
-        @info "" va
 
         if va == Dict{Symbol, Union{Int64, AbstractString}}()
 
@@ -146,7 +135,7 @@ const DA = joinpath(UP, "variant.db")
 
             ip = va[:impact]
 
-            sh = true
+            sr = true
 
         end
 
@@ -156,7 +145,7 @@ const DA = joinpath(UP, "variant.db")
 
         em = false
 
-        sh = false
+        sr = false
 
     end
 
@@ -166,7 +155,18 @@ const DA = joinpath(UP, "variant.db")
 
     end
 
+    # ---- #
+
+    @out ci_ = Dict(
+        "MODIFIER" => "blue-grey",
+        "LOW" => "yellow-8",
+        "MODERATE" => "deep-orange",
+        "HIGH" => "red-8",
+    )
+
     @out im_ = (0, 0, 0, 0)
+
+    # ---- #
 
     @onbutton cg begin
 
@@ -180,11 +180,13 @@ const DA = joinpath(UP, "variant.db")
 
         else
 
-            sh = true
+            sr = true
 
         end
 
     end
+
+    # ---- #
 
     @onbutton cr begin
 
@@ -198,7 +200,7 @@ const DA = joinpath(UP, "variant.db")
 
         else
 
-            sh = true
+            sr = true
 
         end
 
