@@ -29,19 +29,17 @@ function _view_vcf_path()
     join((xelem(
         :div,
         [
-            xelem(:h4, "Searching {{fi}}"; class = "q-pt-xl q-pb-lg text-center"),
-            xelem(
-                :div,
-                quasar(
-                    :btn;
-                    label = "Change",
-                    size = "md",
-                    color = "grey",
-                    @click("su = true; ss = false")
-                );
-                class = "text-center q-pb-xl",
+            xelem(:h6, "Searching 🧬 {{fi}}"; class = "q-ma-md"),
+            quasar(
+                :btn;
+                label = "Change",
+                size = "md",
+                color = "grey-5",
+                class = "q-ma-md",
+                @click("su = true; ss = false")
             ),
         ];
+        class = "flex flex-center",
         @showif(:ss)
     )))
 
