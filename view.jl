@@ -99,17 +99,17 @@ function _view_search_button(bu)
 
 end
 
-function _view_allele(al, la, co)
+function _view_allele(al)
+
+    ai = "$al"
 
     quasar(
-        :card,
-        [
-            xelem(:h1, "{{$al}}"; class = "q-pa-md text-white"),
-            xelem(:h4, "$la"; class = "q-pb-md text-white"),
-        ];
-        flat = true,
-        class = "bg-$co col q-ma-lg",
-        style = "max-width:160px;",
+        :btn;
+        size = "xl",
+        color! = "ca_[$ai]",
+        label! = al,
+        class = "q-ma-sm",
+        style = "",
     )
 
 end
@@ -125,11 +125,32 @@ function _view_variant()
                 xelem(
                     :div,
                     [
-                        _view_allele("a0", "Reference", "green-6"),
-                        _view_allele("a1", "Your Allele 1", "cyan-6"),
-                        _view_allele("a2", "Your Allele 2", "cyan-6"),
+                        xelem(
+                            :div,
+                            [
+                                xelem(:h6, "Reference"; class = "q-pa-sm"),
+                                _view_allele("a0"),
+                            ];
+                            class = "column col-3",
+                        ),
+                        xelem(
+                            :div,
+                            [
+                                xelem(:h6, "Your Allele 1"; class = "q-pa-sm"),
+                                _view_allele("a1"),
+                            ];
+                            class = "column col-3",
+                        ),
+                        xelem(
+                            :div,
+                            [
+                                xelem(:h6, "Your Allele 2"; class = "q-pa-sm"),
+                                _view_allele("a2"),
+                            ];
+                            class = "column col-3",
+                        ),
                     ];
-                    class = "row justify-center q-pa-lg",
+                    class = "row flex-center q-pa-lg",
                 ),
                 xelem(:h6, "Chromosome = {{co}}"; class = "q-pa-sm"),
                 xelem(:h6, "Closest gene = {{cl}}"; class = "q-pa-sm"),

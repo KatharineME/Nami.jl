@@ -157,6 +157,9 @@ const DA = joinpath(UP, "variant.db")
 
     # ---- #
 
+    @out ca_ =
+        Dict("A" => "blue", "T" => "green", "G" => "deep-purple-6", "C" => "purple-6")
+
     @out ci_ = Dict(
         "MODIFIER" => "blue-grey",
         "LOW" => "yellow-8",
@@ -210,4 +213,4 @@ end
 
 # ---- #
 
-@page "/" view
+@page "/" view layout = path"layout.html"
