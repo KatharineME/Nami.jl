@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="author" content="Guardiome" />
+    <title>Nami</title>
+    <meta name="description" content="Window to your genome" />
+    <meta
+      name="keywords"
+      content="Nami, Genome, Genome Explorer, Guardiome, Search Genome, Bioinformatics"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      ._genie .row .col-12 {
+        width: 50%;
+        margin: auto;
+      }
+      [v-cloak] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <% Stipple.page(model, partial = true, v__cloak = true,
+          [Stipple.Genie.Renderer.Html.@yield], Stipple.@if(:isready)) %>
+        </div>
+      </div>
+    </div>
+    <footer class="_genie container">
+      <div class="row">
+        <div class="col-12"></div>
+      </div>
+    </footer>
+  </body>
+</html>

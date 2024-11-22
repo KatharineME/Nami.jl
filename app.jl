@@ -213,4 +213,4 @@ end
 
 # ---- #
 
-@page "/" path"view.html" layout = path"layout.html"
+@page "/" path"html/view.jl.html" layout = path"html/layout.html"

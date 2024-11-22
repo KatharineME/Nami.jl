@@ -1,4 +1,4 @@
-function _view_input(ty, la, hi, bi)
+function view_input(ty, la, hi, bi)
 
     quasar(
         :input;
@@ -14,7 +14,7 @@ function _view_input(ty, la, hi, bi)
 
 end
 
-function _view_search_button(bu)
+function view_search_button(bu)
 
     quasar(
         :btn;
@@ -27,7 +27,7 @@ function _view_search_button(bu)
 
 end
 
-function _view_allele(al)
+function view_allele(al)
 
     ai = "$al"
 
@@ -42,7 +42,7 @@ function _view_allele(al)
 
 end
 
-function _view_impact(nu, na, co)
+function view_impact(nu, na, co)
 
     quasar(
         :card,
@@ -60,15 +60,15 @@ end
 const IM =
     (modifier = "blue-grey", low = "yellow-8", moderate = "deep-orange", high = "red-8")
 
-function _view_impacts()
+function view_impact()
 
     xelem(
         :div,
         [
-            _view_impact("im_[0]", "Modifier", IM[Symbol("modifier")]),
-            _view_impact("im_[1]", "Low", IM[Symbol("low")]),
-            _view_impact("im_[2]", "Moderate", IM[Symbol("moderate")]),
-            _view_impact("im_[3]", "High", IM[Symbol("high")]),
+            view_impact("im_[0]", "Modifier", IM[Symbol("modifier")]),
+            view_impact("im_[1]", "Low", IM[Symbol("low")]),
+            view_impact("im_[2]", "Moderate", IM[Symbol("moderate")]),
+            view_impact("im_[3]", "High", IM[Symbol("high")]),
         ];
         class = "row flex-center q-pa-lg",
         style = "max-width: 960px;",
@@ -76,7 +76,7 @@ function _view_impacts()
 
 end
 
-function _view_variant_buttons()
+function view_variant_button()
 
     xelem(
         :div,

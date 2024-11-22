@@ -44,23 +44,23 @@
 <div v-show="ss" class="row flex-center text-center">
   <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px"
     ><q-tab-panel name="t1">
-      <% _view_input("text", "rsID", "rs625655", :ri) %> <%
-      _view_search_button(:cv) %>
+      <% view_input("text", "rsID", "rs625655", :ri) %> <%
+      view_search_button(:cv) %>
       <h4 v-show="em" class="q-pt-xl">No variant found</h4>
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Variant {{rs}}</h4>
         <div class="row flex-center q-pa-lg">
           <div class="column col-3">
             <h6 class="q-pa-sm">Reference</h6>
-            <% _view_allele("a0") %>
+            <% view_allele("a0") %>
           </div>
           <div class="column col-3">
             <h6 class="q-pa-sm">Your Allele 1</h6>
-            <% _view_allele("a1") %>
+            <% view_allele("a1") %>
           </div>
           <div class="column col-3">
             <h6 class="q-pa-sm">Your Allele 2</h6>
-            <% _view_allele("a2") %>
+            <% view_allele("a2") %>
           </div>
         </div>
         <h6 class="q-pa-sm">Chromosome = {{co}}</h6>
@@ -70,12 +70,12 @@
         <h6 class="q-pa-sm">Impact = {{ip}}</h6>
       </div></q-tab-panel
     ><q-tab-panel name="t2">
-      <% _view_input("text", "Symbol", "UBR3", :sy) %> <%
-      _view_search_button(:cg) %>
+      <% view_input("text", "Symbol", "UBR3", :sy) %> <% view_search_button(:cg)
+      %>
       <h4 v-show="em" class="q-pa-xl">No variants found</h4>
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Gene {{sy}}</h4>
-        <% _view_impacts() %> <% _view_variant_buttons() %>
+        <% view_impact() %> <% view_variant_button() %>
       </div></q-tab-panel
     ><q-tab-panel name="t3"
       ><q-select
@@ -87,12 +87,12 @@
         bg-color="grey-2"
         :options="ch_"
       ></q-select>
-      <% _view_input("number", "Start", "", :st) %> <% _view_input("number",
-      "End", "", :en) %> <% _view_search_button(:cr) %>
+      <% view_input("number", "Start", "", :st) %> <% view_input("number",
+      "End", "", :en) %> <% view_search_button(:cr) %>
       <h4 v-show="em" class="q-pa-xl">No variants found</h4>
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Region {{ch}}:{{st}}-{{en}}</h4>
-        <% _view_impacts() %> <% _view_variant_buttons() %>
+        <% view_impact() %> <% view_variant_button() %>
       </div>
     </q-tab-panel></q-tab-panels
   >
