@@ -6,4 +6,6 @@ Manifest.toml
 
 log
 
+config/secrets.jl
+
 public/upload

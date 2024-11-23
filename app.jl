@@ -1,8 +1,6 @@
 using Nami
 
-using Revise: includet
-
-includet("view.jl")
+include("view.jl")
 
 @genietools
 
