@@ -1,6 +1,6 @@
 module Nami
 
-using SQLite: DB, drop!
+using SQLite: DB, drop!, tableinfo
 
 using SQLite.DBInterface: execute
 
@@ -26,7 +26,13 @@ function make_variant_table!(db, vc)
 
     ta = "variant"
 
+    @info "before dropping table"
+
+    @info tableinfo(db, ta)
+
     drop!(db, ta; ifexists = true)
+
+    @info "dropped table"
 
     execute(
         db,
@@ -42,8 +48,7 @@ function make_variant_table!(db, vc)
         info TEXT,
         format TEXT,
         sample TEXT,
-        gene TEXT,
-        PRIMARY KEY (chrom, pos)
+        gene TEXT
         )
         """,
     )
@@ -160,8 +165,6 @@ function get_variant(db, id)
         Dict{Symbol, Union{Int, AbstractString}}()
 
     else
-
-        @info va_[1]
 
         va_[1]
 

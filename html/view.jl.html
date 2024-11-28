@@ -1,6 +1,17 @@
 <h1 class="q-pt-lg text-center" style="font-family: fantasy">Nami</h1>
+
 <h6 v-show="su" class="q-pb-lg text-center">Window to your genome</h6>
+
 <h4 v-show="su" class="q-pt-lg text-center">Upload your VCF</h4>
+
+<h4 v-show="sp" class="q-pt-lg text-center">Building VCF Table</h4>
+
+<h6 v-show="sp" class="q-pt-lg text-center">May take up to 45 minutes</h6>
+
+<div v-show="sp" class="q-pa-lg text-center">
+  <q-spinner-grid color="teal-13" size="4em" />
+</div>
+
 <div v-show="su" class="q-pa-lg">
   <q-uploader
     accept="vcf.gz"
@@ -9,76 +20,106 @@
     bordered
     color="grey-2"
     text-color="black"
-    v-on:uploaded="function(event) { handle_event(event, 'up') }"
     max-files="1"
+    v-on:start="function(event) { handle_event(event, 'st') }"
+    v-on:uploaded="function(event) { handle_event(event, 'up') }"
+    v-on:finish="function(event) { handle_event(event, 'fi') }"
     :url="'/____/upload/' + channel_"
     style="max-width: 60%; width: 95%; margin: 0 auto"
-  ></q-uploader>
+  >
+  </q-uploader>
 </div>
+
 <div v-show="ss" class="flex-center flex">
   <h6 class="q-ma-md">Searching 🧬 {{fi}}</h6>
+
   <q-btn
     color="grey-5"
     label="Change"
-    v-on:click="su = true; ss = false"
     size="md"
+    v-on:click="su = true; ss = false"
     class="q-ma-md"
-  ></q-btn>
+  >
+  </q-btn>
 </div>
+
 <space class="q-pa-lg"></space>
+
 <div class="row flex-center">
   <q-tabs
+    no-caps
     indicator-color="grey-2"
     v-model="ta"
     v-show="ss"
-    class="col-12"
     align="justify"
-    no-caps
     active-bg-color="grey-2"
+    class="col-12"
     style="max-width: 960px"
-    ><q-tab name="t1"><h4>Variant</h4></q-tab
-    ><q-tab name="t2"><h4>Gene</h4></q-tab
-    ><q-tab name="t3"><h4>Region</h4></q-tab></q-tabs
   >
+    <q-tab name="t1">
+      <h4>Variant</h4>
+    </q-tab>
+
+    <q-tab name="t2">
+      <h4>Gene</h4>
+    </q-tab>
+
+    <q-tab name="t3">
+      <h4>Region</h4>
+    </q-tab>
+  </q-tabs>
 </div>
+
 <div v-show="ss" class="row flex-center text-center">
-  <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px"
-    ><q-tab-panel name="t1">
+  <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px">
+    <q-tab-panel name="t1">
       <% view_input("text", "rsID", "rs625655", :ri) %> <%
       view_search_button(:cv) %>
+
       <h4 v-show="em" class="q-pt-xl">No variant found</h4>
+
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Variant {{rs}}</h4>
+
         <div class="row flex-center q-pa-lg">
+          <div class="column col-3"><% view_allele("a0", "Reference") %></div>
+
           <div class="column col-3">
-            <h6 class="q-pa-sm">Reference</h6>
-            <% view_allele("a0") %>
+            <% view_allele("a1", "Your Allele 1") %>
           </div>
+
           <div class="column col-3">
-            <h6 class="q-pa-sm">Your Allele 1</h6>
-            <% view_allele("a1") %>
-          </div>
-          <div class="column col-3">
-            <h6 class="q-pa-sm">Your Allele 2</h6>
-            <% view_allele("a2") %>
+            <% view_allele("a2", "Your Allele 2") %>
           </div>
         </div>
+
         <h6 class="q-pa-sm">Chromosome = {{co}}</h6>
+
         <h6 class="q-pa-sm">Closest gene = {{cl}}</h6>
+
         <h6 class="q-pa-sm">Position = {{po}}</h6>
+
         <h6 class="q-pa-sm">Effect = {{an}}</h6>
+
         <h6 class="q-pa-sm">Impact = {{ip}}</h6>
-      </div></q-tab-panel
-    ><q-tab-panel name="t2">
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="t2">
       <% view_input("text", "Symbol", "UBR3", :sy) %> <% view_search_button(:cg)
       %>
+
       <h4 v-show="em" class="q-pa-xl">No variants found</h4>
+
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Gene {{sy}}</h4>
+
         <% view_impact() %> <% view_variant_button() %>
-      </div></q-tab-panel
-    ><q-tab-panel name="t3"
-      ><q-select
+      </div>
+    </q-tab-panel>
+
+    <q-tab-panel name="t3">
+      <q-select
         outlined
         label="Chromosome"
         clearable
@@ -86,14 +127,19 @@
         class="q-pa-sm"
         bg-color="grey-2"
         :options="ch_"
-      ></q-select>
+      >
+      </q-select>
+
       <% view_input("number", "Start", "", :st) %> <% view_input("number",
       "End", "", :en) %> <% view_search_button(:cr) %>
+
       <h4 v-show="em" class="q-pa-xl">No variants found</h4>
+
       <div v-show="sr">
         <h4 class="q-pt-xl q-pb-lg">Region {{ch}}:{{st}}-{{en}}</h4>
+
         <% view_impact() %> <% view_variant_button() %>
       </div>
-    </q-tab-panel></q-tab-panels
-  >
+    </q-tab-panel>
+  </q-tab-panels>
 </div>
