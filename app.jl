@@ -330,4 +330,4 @@ end
 
 # ---- #
 
-@page "/nami" path"html/view.jl.html" layout = path"html/layout.html"
+@page "/" path"html/view.jl.html" layout = path"html/layout.html"
