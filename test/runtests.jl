@@ -4,8 +4,6 @@ using Test: @test
 
 # ----------------------------------------------------------------------------------------------- #
 
-using GenieFramework
-
 using SQLite: columns
 
 # ---- #
@@ -28,7 +26,7 @@ const DA = Nami.DB(PA)
 
 if RE
 
-    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "thin.1M.vcf.gz"))
+    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "full.vcf.gz"))
 
 end
 

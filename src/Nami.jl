@@ -6,33 +6,11 @@ using SQLite.DBInterface: execute
 
 using CodecZlib: GzipDecompressorStream
 
-function _get_gene(io)
-
-    _get_annotation(io)[4]
-
-end
-
-function _get_annotation(io)
-
-    io_ = split(io, ';')
-
-    an = io_[findfirst(startswith("ANN="), io_)][5:end]
-
-    split(an, '|'; limit = 5)
-
-end
-
 function make_variant_table!(db, vc)
 
     ta = "variant"
 
-    @info "before dropping table"
-
-    @info tableinfo(db, ta)
-
     drop!(db, ta; ifexists = true)
-
-    @info "dropped table"
 
     execute(
         db,
@@ -45,10 +23,11 @@ function make_variant_table!(db, vc)
         id TEXT,
         ref TEXT,
         alt TEXT, 
-        info TEXT,
-        format TEXT,
-        sample TEXT,
-        gene TEXT
+        effect TEXT,
+        impact TEXT,
+        gene TEXT,
+        allele1 TEXT,
+        allele2 TEXT
         )
         """,
     )
@@ -85,7 +64,37 @@ function make_variant_table!(db, vc)
 
         end
 
-        ge = ma ? "Manta" : _get_gene(io)
+        if ma
+
+            ef = ip = ge = "Manta"
+
+        else
+
+            #TODO: Return annotation for multi-allelic variants
+            ef, ip, ge = split(io, '|'; limit = 5)[2:4]
+
+        end
+
+        ng = split(sa, ':'; limit = 2)[1]
+
+        if split(fo, ':'; limit = 2)[1] != "GT"
+
+            continue
+
+        elseif lastindex(ng) == 1
+
+            a1 = ng == "0" ? re : string(split(al, ','; limit = 3)[parse(Int, ng)])
+
+            a2 = ""
+
+        else
+
+            a1, a2 = (
+                sp == "0" ? re : string(split(al, ','; limit = 3)[parse(Int, sp)]) for
+                sp in eachsplit(ng, r"\||/")
+            )
+
+        end
 
         execute(
             db,
@@ -99,10 +108,11 @@ function make_variant_table!(db, vc)
             '$id',
             '$re',
             '$al',
-            '$io',
-            '$fo',
-            '$sa',
-            '$ge'
+            '$ef',
+            '$ip',
+            '$ge',
+            '$a1',
+            '$a2'
             )
         """,
         )
@@ -114,35 +124,11 @@ end
 function _make_variant_dictionary(ro)
 
     va = Dict{Symbol, Union{Int, AbstractString}}(
-        zip((:chrom, :pos, :id, :ref, :alt, :info, :format, :sample, :gene), ro),
+        zip(
+            (:chrom, :pos, :id, :ref, :alt, :ieffect, :impact, :gene, :allele1, :allele2),
+            ro,
+        ),
     )
-
-    if startswith(va[:id], "Manta")
-
-        va[:effect] = va[:impact] = "Manta"
-
-    else
-
-        #TODO: Return annotation for multi-allelic variants
-        _, va[:effect], va[:impact], _ = _get_annotation(va[:info])
-
-    end
-
-    for (fo, sa) in zip(eachsplit(va[:format], ':'), eachsplit(va[:sample], ':'))
-
-        if fo == "GT"
-
-            va[:allele_1], va[:allele_2] = (
-                sp == "0" ? va[:ref] :
-                string(split(va[:alt], ','; limit = 3)[parse(Int, sp)]) for
-                sp in eachsplit(sa, r"\||/")
-            )
-
-        end
-
-    end
-
-    va
 
 end
 
