@@ -145,15 +145,15 @@ const DA = joinpath(UP, "variant.db")
 
             a0 = va[:ref]
 
-            cl = va[:gene]
-
-            a1 = va[:allele_1]
-
-            a2 = va[:allele_2]
-
             an = va[:effect]
 
             ip = va[:impact]
+
+            cl = va[:gene]
+
+            a1 = va[:allele1]
+
+            a2 = va[:allele2]
 
             sr = true
 
@@ -178,10 +178,10 @@ const DA = joinpath(UP, "variant.db")
     # ---- #
 
     @out ci_ = Dict(
-        "MODIFIER" => "blue-grey",
-        "LOW" => "yellow-8",
-        "MODERATE" => "deep-orange",
-        "HIGH" => "red-8",
+        "Modifier" => "blue-grey",
+        "Low" => "yellow-8",
+        "Moderate" => "deep-orange",
+        "High" => "red-8",
     )
 
     @out im_ = (0, 0, 0, 0)
@@ -230,6 +230,44 @@ end
 
 # ---- #
 
+function header()
+
+    quasar(
+        :header,
+        [
+            xelem(
+                :p,
+                "Nami";
+                class = "col-4 offset-4 text-center text-white q-mt-lg q-mb-sm",
+                style = "font-size: 240%; font-family: fantasy",
+            ),
+            xelem(
+                :div,
+                xelem(
+                    :div,
+                    "Searching 🧬 {{fi}}";
+                    class = "text-h6 text-white text-right q-ma-md",
+                );
+                class = "col-2",
+                @showif(:ss)
+            ),
+            quasar(
+                :btn;
+                outline = true,
+                size = "md",
+                color = "white",
+                label = "Change",
+                class = "col-1 q-ma-md",
+                @showif(:ss),
+                @click("su = true; ss = false")
+            ),
+        ];
+        class = "row items-center",
+        style = "background-color: #4e40d8;",
+    )
+
+end
+
 function view_input(ty, la, hi, bi)
 
     quasar(
@@ -251,11 +289,23 @@ function view_search_button(bu)
     quasar(
         :btn;
         size = "lg",
-        color = "teal-13",
+        color = "indigo-14",
         label = "Search",
-        class = "q-mt-lg",
+        class = "q-ma-lg",
         @click("$bu = true")
     )
+
+end
+
+function view_search_title(st)
+
+    xelem(:div, st; class = "text-h4 text-black q-pt-xl q-pb-lg")
+
+end
+
+function view_no_variant_found()
+
+    xelem(:div, "No variants found"; class = "text-h4 text-black q-pa-xl", @showif(:em))
 
 end
 
@@ -266,27 +316,55 @@ function view_allele(al, la)
     quasar(
         :card,
         [
-            xelem(:h1, "{{$ai}}"; class = "q-pa-md text-white"),
-            xelem(:h4, la; class = "q-pb-md text-white"),
+            xelem(:div, la; class = "text-h6 text-white q-pa-md"),
+            xelem(:div, "{{$ai}}"; class = "text-h2 text-weight-bold text-white q-pb-md"),
         ];
         flat = true,
+        bordered = true,
         class = Symbol(
-            "($ai == 'A' ? 'bg-blue' : $ai == 'T' ? 'bg-cyan' : $ai == 'G' ? 'bg-teal' : $ai == 'C' ? 'bg-green' : 'bg-pink') + ' col' + ' q-ma-lg'",
+            "($ai == 'A' ? 'bg-blue' : $ai == 'T' ? 'bg-cyan' : $ai == 'G' ? 'bg-teal' : $ai == 'C' ? 'bg-green' : 'bg-pink') + ' col q-ma-lg'",
         ),
     )
 
 end
+
+function view_variant_information(fi, na, va)
+
+    quasar(
+        :card,
+        quasar(
+            Symbol("card-section"),
+            [
+                xelem(:div, na; class = "text-h6"),
+                xelem(
+                    :img;
+                    src = fi,
+                    class = "q-ma-md",
+                    style = "height:48px; object-fit: contain;",
+                ),
+                xelem(:div, va; class = "text-h6 text-black"),
+            ];
+            vertical = true,
+            class = "column flex-center",
+        );
+        flat = true,
+        vertical = true,
+        class = "col-2 bg-grey-2 flex-center",
+    )
+
+end
+
 
 function view_impact(nu, na, co)
 
     quasar(
         :card,
         [
-            xelem(:h1, "{{$nu}}"; class = "q-pa-md text-white"),
-            xelem(:h4, "$na"; class = "q-pb-md text-white"),
+            xelem(:div, "$na"; class = "text-h6 text-white q-pa-md"),
+            xelem(:div, "{{$nu}}"; class = "text-h2 text-weight-bold text-white q-pb-md "),
         ];
         flat = true,
-        class = "bg-$co col q-ma-lg",
+        class = "col bg-$co q-ma-lg",
         style = "max-width:160px;",
     )
 
@@ -318,9 +396,9 @@ function view_variant_button()
         @recur("vr in va_"),
         quasar(
             :btn;
-            label! = "vr.id",
-            color! = "ci_[vr.impact]",
             size = "md",
+            color! = "ci_[vr.impact]",
+            label! = "vr.id",
             class = "q-ma-md",
             @click("ta = 't1'; va = vr")
         ),

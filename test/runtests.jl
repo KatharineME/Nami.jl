@@ -24,11 +24,28 @@ const DA = Nami.DB(PA)
 
 # ---- #
 
-if RE
+@btime if $RE
+
+    Nami.make_variant_table!($DA, joinpath(@__DIR__, "data", "thin.1M.vcf.gz"))
+
+end
+
+# 147.235 ms (23969 allocations: 2.21 MiB) 
+# vcf.db = 32K
+
+columns(DA, "variant")
+
+# ---- #
+
+@time if RE
 
     Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "full.vcf.gz"))
 
 end
+
+# 2173.816849 seconds (292.56 M allocations: 25.604 GiB, 0.16% gc time, 0.00% compilation time)
+# vcf.db = 316M
+# vcf.db.gz = 79M
 
 columns(DA, "variant")
 
@@ -46,7 +63,7 @@ re = Nami.get_variant(DA, 1, 0, 24000000)
 
 # ---- #
 
-re = Nami.get_variant(NA, "MT", 0, 100000)
+re = Nami.get_variant(DA, "MT", 0, 100000)
 
 # ---- #
 

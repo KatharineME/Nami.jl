@@ -1,10 +1,24 @@
 module Nami
 
+using CodecZlib: GzipDecompressorStream
+
+using .Iterators: take
+
 using SQLite: DB, drop!, tableinfo
 
 using SQLite.DBInterface: execute
 
-using CodecZlib: GzipDecompressorStream
+function get_allele(ng, re, al)
+
+    ng == "0" ? re : collect(take(eachsplit(al, ','), 3))[parse(Int, ng)]
+
+end
+
+function get_character_before_colon(st)
+
+    collect(take(eachsplit(st, ':'), 1))[1]
+
+end
 
 function make_variant_table!(db, vc)
 
@@ -22,7 +36,6 @@ function make_variant_table!(db, vc)
         pos INTEGER,
         id TEXT,
         ref TEXT,
-        alt TEXT, 
         effect TEXT,
         impact TEXT,
         gene TEXT,
@@ -71,28 +84,25 @@ function make_variant_table!(db, vc)
         else
 
             #TODO: Return annotation for multi-allelic variants
-            ef, ip, ge = split(io, '|'; limit = 5)[2:4]
+            ee, ia, ge = collect(take(eachsplit(io, '|'), 5))[2:4]
+
+            ef, ip = (titlecase(st) for st in (replace(ee, "_" => " "), ia))
 
         end
 
-        ng = split(sa, ':'; limit = 2)[1]
+        ng = get_character_before_colon(sa)
 
-        if split(fo, ':'; limit = 2)[1] != "GT"
+        if get_character_before_colon(fo) != "GT"
 
             continue
 
         elseif lastindex(ng) == 1
 
-            a1 = ng == "0" ? re : string(split(al, ','; limit = 3)[parse(Int, ng)])
-
-            a2 = ""
+            a1, a2 = get_allele(ng, re, al), ""
 
         else
 
-            a1, a2 = (
-                sp == "0" ? re : string(split(al, ','; limit = 3)[parse(Int, sp)]) for
-                sp in eachsplit(ng, r"\||/")
-            )
+            a1, a2 = (get_allele(sp, re, al) for sp in eachsplit(ng, r"\||/"))
 
         end
 
@@ -107,7 +117,6 @@ function make_variant_table!(db, vc)
             $po,
             '$id',
             '$re',
-            '$al',
             '$ef',
             '$ip',
             '$ge',
@@ -124,10 +133,7 @@ end
 function _make_variant_dictionary(ro)
 
     va = Dict{Symbol, Union{Int, AbstractString}}(
-        zip(
-            (:chrom, :pos, :id, :ref, :alt, :ieffect, :impact, :gene, :allele1, :allele2),
-            ro,
-        ),
+        zip((:chrom, :pos, :id, :ref, :effect, :impact, :gene, :allele1, :allele2), ro),
     )
 
 end
@@ -202,25 +208,29 @@ function count_impact(va_)
 
         ip = va[:impact]
 
-        if ip == "MODIFIER"
+        if ip == "Manta"
+
+            continue
+
+        elseif ip == "Modifier"
 
             mi += 1
 
-        elseif ip == "LOW"
+        elseif ip == "Low"
 
             lo += 1
 
-        elseif ip == "MODERATE"
+        elseif ip == "Moderate"
 
             me += 1
 
-        elseif ip == "HIGH"
+        elseif ip == "High"
 
             hi += 1
 
         else
 
-            error()
+            error(ip)
 
         end
 
