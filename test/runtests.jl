@@ -68,5 +68,3 @@ re = Nami.get_variant(DA, "MT", 0, 100000)
 # ---- #
 
 Nami.count_impact(Nami.get_variant(DA, 1, 0, 2400000))
-
-# ---- #

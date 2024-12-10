@@ -55,15 +55,9 @@ const DA = joinpath(UP, "variant.db")
 
     @event fi begin
 
-        @info "fi"
-
         sp = false
 
-        @info "sp" sp
-
         ss = true
-
-        @info "ss" ss
 
     end
 
@@ -99,7 +93,7 @@ const DA = joinpath(UP, "variant.db")
 
     @out a2 = ""
 
-    @out an = ""
+    @out ef = ""
 
     @out ip = ""
 
@@ -145,7 +139,7 @@ const DA = joinpath(UP, "variant.db")
 
             a0 = va[:ref]
 
-            an = va[:effect]
+            ef = va[:effect]
 
             ip = va[:impact]
 
@@ -188,9 +182,7 @@ const DA = joinpath(UP, "variant.db")
 
     # ---- #
 
-    @onbutton cg begin
-
-        va_ = Nami.get_variant(db, sy)
+    @onchange va_ begin
 
         im_ = Nami.count_impact(va_)
 
@@ -206,23 +198,18 @@ const DA = joinpath(UP, "variant.db")
 
     end
 
+
+    @onbutton cg begin
+
+        va_ = Nami.get_variant(db, sy)
+
+    end
+
     # ---- #
 
     @onbutton cr begin
 
         va_ = Nami.get_variant(db, ch, st, en)
-
-        im_ = Nami.count_impact(va_)
-
-        if im_ == (0, 0, 0, 0)
-
-            em = true
-
-        else
-
-            sr = true
-
-        end
 
     end
 
@@ -353,7 +340,6 @@ function view_variant_information(fi, na, va)
     )
 
 end
-
 
 function view_impact(nu, na, co)
 

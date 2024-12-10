@@ -4,7 +4,7 @@ using CodecZlib: GzipDecompressorStream
 
 using .Iterators: take
 
-using SQLite: DB, drop!, tableinfo
+using SQLite: DB, drop!
 
 using SQLite.DBInterface: execute
 
