@@ -3,17 +3,15 @@
 
   <space class="q-pa-xl"></space>
 
-  <space class="q-pa-md"></space>
-
-  <div v-show="su" class="text-h6 q-pb-lg text-center text-black">
+  <div v-show="su" class="text-h6 q-pt-xl q-pb-lg text-center text-black">
     Window to your genome
   </div>
 
-  <div v-show="su" class="text-h4 q-pt-lg text-center text-black">
+  <div v-show="su" class="text-h4 q-pt-xl text-center text-black">
     Upload your VCF
   </div>
 
-  <div v-show="sp" class="text-h4 q-pt-lg text-center text-black">
+  <div v-show="sp" class="text-h4 q-pt-xl text-center text-black">
     Building VCF Table
   </div>
 
@@ -22,7 +20,7 @@
   </div>
 
   <div v-show="sp" class="q-pa-lg text-center">
-    <q-spinner-grid color="teal-13" size="4em" />
+    <q-spinner-grid color="biocausality" size="4em" />
   </div>
 
   <div v-show="su" class="q-pa-lg">
@@ -34,9 +32,9 @@
       color="grey-2"
       text-color="black"
       max-files="1"
-      v-on:start="function(event) { handle_event(event, 'st') }"
       v-on:uploaded="function(event) { handle_event(event, 'up') }"
       v-on:finish="function(event) { handle_event(event, 'fi') }"
+      v-on:removed="function(event) { handle_event(event, 're') }"
       :url="'/____/upload/' + channel_"
       style="max-width: 60%; width: 95%; margin: 0 auto"
     >
@@ -48,11 +46,11 @@
   <div class="row flex-center">
     <q-tabs
       no-caps
-      indicator-color="deep-purple-1"
+      indicator-color="biocausality-16"
       v-model="ta"
       v-show="ss"
       align="justify"
-      active-bg-color="deep-purple-1"
+      active-bg-color="biocausality-16"
       class="col-12"
       style="max-width: 960px"
     >

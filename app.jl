@@ -30,21 +30,15 @@ const DA = joinpath(UP, "variant.db")
 
     db = Nami.DB(DA)
 
-    @event st begin
-
-        @info "st"
-
-    end
-
     @event up begin
-
-        @info "up"
 
         sp = true
 
         su = false
 
         fi = fileuploads["name"]
+
+
 
         Nami.make_variant_table!(
             db,
@@ -246,11 +240,10 @@ function header()
                 label = "Change",
                 class = "col-1 q-ma-md",
                 @showif(:ss),
-                @click("su = true; ss = false")
+                @click("su = true; ss = false;")
             ),
         ];
-        class = "row items-center",
-        style = "background-color: #4e40d8;",
+        class = "row items-center bg-biocausality",
     )
 
 end
@@ -276,7 +269,7 @@ function view_search_button(bu)
     quasar(
         :btn;
         size = "lg",
-        color = "indigo-14",
+        color = "biocausality",
         label = "Search",
         class = "q-ma-lg",
         @click("$bu = true")
@@ -320,16 +313,16 @@ function view_variant_information(fi, na, va)
     quasar(
         :card,
         quasar(
-            Symbol("card-section"),
+            :card__section,
             [
                 xelem(:div, na; class = "text-h6"),
                 xelem(
                     :img;
                     src = fi,
-                    class = "q-ma-md",
-                    style = "height:48px; object-fit: contain;",
+                    class = "q-ma-sm",
+                    style = "height:40px; object-fit: contain;",
                 ),
-                xelem(:div, va; class = "text-h6 text-black"),
+                xelem(:div, va; class = "text-h6 text-biocausality q-pt-md"),
             ];
             vertical = true,
             class = "column flex-center",
@@ -377,17 +370,23 @@ end
 
 function view_variant_button()
 
-    xelem(
-        :div,
-        @recur("vr in va_"),
-        quasar(
-            :btn;
-            size = "md",
-            color! = "ci_[vr.impact]",
-            label! = "vr.id",
-            class = "q-ma-md",
-            @click("ta = 't1'; va = vr")
-        ),
+    quasar(
+        :scroll__area;
+        style = "height: 480px",
+        [
+            xelem(
+                :div,
+                @recur("vr in va_"),
+                quasar(
+                    :btn;
+                    size = "md",
+                    color! = "ci_[vr.impact]",
+                    label! = "vr.id",
+                    class = "q-ma-md",
+                    @click("ta = 't1'; va = vr")
+                ),
+            ),
+        ],
     )
 
 end
