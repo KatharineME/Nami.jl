@@ -4,17 +4,17 @@ using CodecZlib: GzipDecompressorStream
 
 using .Iterators: take
 
-using SQLite: DB, drop!
+using SQLite: DB, drop!, Stmt
 
-using SQLite.DBInterface: execute
+using SQLite.DBInterface: close!, execute
 
-function get_allele(ng, re, al)
+function _get_allele(ng, re, al)
 
     ng == "0" ? re : collect(take(eachsplit(al, ','), 3))[parse(Int, ng)]
 
 end
 
-function get_character_before_colon(st)
+function _get_character_before_colon(st)
 
     collect(take(eachsplit(st, ':'), 1))[1]
 
@@ -90,19 +90,19 @@ function make_variant_table!(db, vc)
 
         end
 
-        ng = get_character_before_colon(sa)
+        ng = _get_character_before_colon(sa)
 
-        if get_character_before_colon(fo) != "GT"
+        if _get_character_before_colon(fo) != "GT"
 
             continue
 
         elseif lastindex(ng) == 1
 
-            a1, a2 = get_allele(ng, re, al), ""
+            a1, a2 = _get_allele(ng, re, al), ""
 
         else
 
-            a1, a2 = (get_allele(sp, re, al) for sp in eachsplit(ng, r"\||/"))
+            a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(ng, r"\||/"))
 
         end
 
@@ -138,9 +138,19 @@ function _make_variant_dictionary(ro)
 
 end
 
-function get_variant(db, id)
+function _execute_and_close_statement(db, st)
 
-    va_ = map(_make_variant_dictionary, execute(
+    sm = Stmt(db, st)
+
+    return map(_make_variant_dictionary, execute(sm))
+
+    close!(sm)
+
+end
+
+function get_variant_by_id(db, id)
+
+    va_ = _execute_and_close_statement(
         db,
         """
         SELECT
@@ -148,9 +158,9 @@ function get_variant(db, id)
         FROM
             variant
         WHERE
-            id = 'rs$id'
+            id = '$id'
         """,
-    ))
+    )
 
     if isempty(va_)
 
@@ -164,9 +174,9 @@ function get_variant(db, id)
 
 end
 
-function get_variant(db, ge::AbstractString)
+function get_variant(db, ge)
 
-    map(_make_variant_dictionary, execute(
+    _execute_and_close_statement(
         db,
         """
         SELECT
@@ -176,13 +186,13 @@ function get_variant(db, ge::AbstractString)
         WHERE
             gene = '$ge'
         """,
-    ))
+    )
 
 end
 
 function get_variant(db, ch, st, en)
 
-    map(_make_variant_dictionary, execute(
+    _execute_and_close_statement(
         db,
         """
         SELECT
@@ -196,7 +206,7 @@ function get_variant(db, ch, st, en)
         AND
             pos <= $en
         """,
-    ))
+    )
 
 end
 

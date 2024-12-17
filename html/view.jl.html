@@ -3,29 +3,23 @@
 
   <space class="q-pa-xl"></space>
 
-  <div v-show="su" class="text-h6 q-pt-xl q-pb-lg text-center text-black">
+  <div v-show="su" class="text-h5 q-pa-xl text-indigo text-center">
     Window to your genome
   </div>
 
-  <div v-show="su" class="text-h4 q-pt-xl text-center text-black">
-    Upload your VCF
+  <div v-show="su" class="text-h4 q-pb-md text-center text-black">
+    Upload your variant database file
   </div>
 
-  <div v-show="sp" class="text-h4 q-pt-xl text-center text-black">
-    Building VCF Table
-  </div>
-
-  <div v-show="sp" class="text-h6 q-pt-lg text-center text-black">
-    May take up to 45 minutes
-  </div>
+  <div v-show="sp" class="text-h4 q-pt-xl text-center text-black">Loading</div>
 
   <div v-show="sp" class="q-pa-lg text-center">
-    <q-spinner-grid color="biocausality" size="4em" />
+    <q-spinner-grid color="indigo" size="4em" />
   </div>
 
   <div v-show="su" class="q-pa-lg">
     <q-uploader
-      accept="vcf.gz"
+      accept=".db"
       flat
       auto-upload
       bordered
@@ -34,11 +28,21 @@
       max-files="1"
       v-on:uploaded="function(event) { handle_event(event, 'up') }"
       v-on:finish="function(event) { handle_event(event, 'fi') }"
-      v-on:removed="function(event) { handle_event(event, 're') }"
       :url="'/____/upload/' + channel_"
       style="max-width: 60%; width: 95%; margin: 0 auto"
     >
     </q-uploader>
+  </div>
+
+  <div v-show="su" class="column flex-center">
+    <div class="text-h5 q-pa-md text-center text-black">Don't have one?</div>
+    <q-btn
+      color="indigo"
+      label="Contact Us"
+      size="lg"
+      class="q-ma-lg"
+      href="mailto:team@mytrillions.com"
+    ></q-btn>
   </div>
 
   <space class="q-pa-lg"></space>
@@ -46,11 +50,11 @@
   <div class="row flex-center">
     <q-tabs
       no-caps
-      indicator-color="biocausality-16"
+      indicator-color="indigo-light"
       v-model="ta"
       v-show="ss"
       align="justify"
-      active-bg-color="biocausality-16"
+      active-bg-color="indigo-light"
       class="col-12"
       style="max-width: 960px"
     >
@@ -71,31 +75,28 @@
   <div v-show="ss" class="row flex-center text-center">
     <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px">
       <q-tab-panel name="t1">
-        <% view_input("text", "rsID", "rs625655", :ri) %> <%
-        view_search_button(:cv) %> <% view_no_variant_found() %>
+        <% view_input("text", "rsID or Chromosome:Location", "rs625655", :ri) %>
+        <% view_search_button(:cv) %> <% view_no_variant_found() %>
 
         <div v-show="sr">
-          <% view_search_title("Variant {{rs}}") %>
+          <% view_search_title("Variant {{ri}}") %>
 
-          <div class="row flex-center q-pa-lg">
-            <div class="column col-3"><% view_allele("a0", "Reference") %></div>
+          <div class="row q-pa-lg items-start justify-center">
+            <div class="col-3"><% view_allele("a0", "Reference") %></div>
 
-            <div class="column col-3">
-              <% view_allele("a1", "Your Allele 1") %>
-            </div>
+            <div class="col-3"><% view_allele("a1", "Your Allele 1") %></div>
 
-            <div class="column col-3">
-              <% view_allele("a2", "Your Allele 2") %>
-            </div>
+            <div class="col-3"><% view_allele("a2", "Your Allele 2") %></div>
           </div>
 
           <div class="row q-gutter-lg justify-evenly">
-            <% view_variant_information("chromosome.png", "Chromosome",
-            "{{co}}") %> <% view_variant_information("position.png", "Position",
-            "{{po}}") %> <% view_variant_information("gene.png", "Closest Gene",
-            "{{cl}}") %> <% view_variant_information("effect.png", "Effect",
-            "{{ef}}") %> <% view_variant_information("impact.png", "Impact",
-            "{{ip}}") %>
+            <% view_variant_information("image/chromosome.png", "Chromosome",
+            "{{co}}") %> <% view_variant_information("image/position.png",
+            "Position", "{{po}}") %> <%
+            view_variant_information("image/gene.png", "Gene", "{{ge}}") %> <%
+            view_variant_information("image/effect.png", "Effect", "{{ef}}") %>
+            <% view_variant_information("image/impact.png", "Impact", "{{ip}}")
+            %>
           </div>
         </div>
       </q-tab-panel>
@@ -112,13 +113,13 @@
 
       <q-tab-panel name="t3">
         <q-select
+          :options="ch_"
           outlined
           label="Chromosome"
           clearable
           v-model="ch"
           class="q-pa-sm"
           bg-color="grey-2"
-          :options="ch_"
         >
         </q-select>
 

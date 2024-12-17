@@ -12,7 +12,7 @@ const RE = true
 
 # ---- #
 
-const PA = joinpath(tempdir(), "vcf.db")
+const PA = joinpath(tempdir(), "Variant.db")
 
 if RE && isfile(PA)
 
@@ -30,7 +30,7 @@ const DA = Nami.DB(PA)
 
 end
 
-# 147.235 ms (23969 allocations: 2.21 MiB) 
+# 135.003 ms (27998 allocations: 2.37 MiB)
 # vcf.db = 32K
 
 columns(DA, "variant")
@@ -39,7 +39,7 @@ columns(DA, "variant")
 
 @time if RE
 
-    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "full.vcf.gz"))
+    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "735.vcf.gz"))
 
 end
 
@@ -51,7 +51,7 @@ columns(DA, "variant")
 
 # ---- #
 
-re = Nami.get_variant(DA, 10916692)
+re = Nami.get_variant_by_id(DA, "rs10916692")
 
 # ---- #
 

@@ -6,14 +6,6 @@ using Nami
 
 const UP = joinpath("public", "upload")
 
-if !isdir(UP)
-
-    mkdir(UP)
-
-end
-
-const DA = joinpath(UP, "variant.db")
-
 # ---- #
 
 @app begin
@@ -24,11 +16,11 @@ const DA = joinpath(UP, "variant.db")
 
     @in ss = false
 
-    @in fi = ""
+    @in na = ""
+
+    @in db = Nami.DB()
 
     # ---- #
-
-    db = Nami.DB(DA)
 
     @event up begin
 
@@ -36,14 +28,9 @@ const DA = joinpath(UP, "variant.db")
 
         su = false
 
-        fi = fileuploads["name"]
+        na = fileuploads["name"]
 
-
-
-        Nami.make_variant_table!(
-            db,
-            mv(fileuploads["path"], joinpath(UP, fi); force = true),
-        )
+        db = Nami.DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
 
     end
 
@@ -69,27 +56,27 @@ const DA = joinpath(UP, "variant.db")
 
     # ---- #
 
-    @out rs = ""
-
-    @in ri = 0
-
-    @in cv = false
-
     @out co = ""
-
-    @out cl = ""
 
     @out po = 0
 
+    @out rs = ""
+
+    @in ri = ""
+
     @out a0 = ""
+
+    @out ef = ""
+
+    @out ip = ""
+
+    @out ge = ""
 
     @out a1 = ""
 
     @out a2 = ""
 
-    @out ef = ""
-
-    @out ip = ""
+    @in cv = false
 
     # ---- #
 
@@ -129,7 +116,7 @@ const DA = joinpath(UP, "variant.db")
 
             rs = va[:id]
 
-            ri = parse(Int, rs[3:end])
+            ri = rs
 
             a0 = va[:ref]
 
@@ -137,7 +124,7 @@ const DA = joinpath(UP, "variant.db")
 
             ip = va[:impact]
 
-            cl = va[:gene]
+            ge = va[:gene]
 
             a1 = va[:allele1]
 
@@ -159,7 +146,7 @@ const DA = joinpath(UP, "variant.db")
 
     @onbutton cv begin
 
-        va = Nami.get_variant(db, ri)
+        va = Nami.get_variant_by_id(db, ri)
 
     end
 
@@ -191,7 +178,6 @@ const DA = joinpath(UP, "variant.db")
         end
 
     end
-
 
     @onbutton cg begin
 
@@ -226,7 +212,7 @@ function header()
                 :div,
                 xelem(
                     :div,
-                    "Searching 🧬 {{fi}}";
+                    "Searching {{na}}";
                     class = "text-h6 text-white text-right q-ma-md",
                 );
                 class = "col-2",
@@ -243,7 +229,7 @@ function header()
                 @click("su = true; ss = false;")
             ),
         ];
-        class = "row items-center bg-biocausality",
+        class = "row items-center bg-indigo",
     )
 
 end
@@ -269,7 +255,7 @@ function view_search_button(bu)
     quasar(
         :btn;
         size = "lg",
-        color = "biocausality",
+        color = "indigo",
         label = "Search",
         class = "q-ma-lg",
         @click("$bu = true")
@@ -297,12 +283,17 @@ function view_allele(al, la)
         :card,
         [
             xelem(:div, la; class = "text-h6 text-white q-pa-md"),
-            xelem(:div, "{{$ai}}"; class = "text-h2 text-weight-bold text-white q-pb-md"),
+            xelem(
+                :div,
+                "{{$ai}}";
+                class = "text-white text-bold q-pb-md q-ma-sm",
+                style = "inline-size: 144px; overflow-wrap: break-word; overflow:hidden; min-width:0; font-size: 32px",
+            ),
         ];
         flat = true,
         bordered = true,
         class = Symbol(
-            "($ai == 'A' ? 'bg-blue' : $ai == 'T' ? 'bg-cyan' : $ai == 'G' ? 'bg-teal' : $ai == 'C' ? 'bg-green' : 'bg-pink') + ' col q-ma-lg'",
+            "($ai == 'A' ? 'bg-blue' : $ai == 'T' ? 'bg-cyan' : $ai == 'G' ? 'bg-teal' : $ai == 'C' ? 'bg-green' : 'bg-pink') + ' column flex-center q-ma-lg'",
         ),
     )
 
@@ -322,7 +313,7 @@ function view_variant_information(fi, na, va)
                     class = "q-ma-sm",
                     style = "height:40px; object-fit: contain;",
                 ),
-                xelem(:div, va; class = "text-h6 text-biocausality q-pt-md"),
+                xelem(:div, va; class = "text-h6 text-indigo q-pt-md"),
             ];
             vertical = true,
             class = "column flex-center",
@@ -340,7 +331,12 @@ function view_impact(nu, na, co)
         :card,
         [
             xelem(:div, "$na"; class = "text-h6 text-white q-pa-md"),
-            xelem(:div, "{{$nu}}"; class = "text-h2 text-weight-bold text-white q-pb-md "),
+            xelem(
+                :div,
+                "{{$nu}}";
+                class = "text-white text-bold q-pb-md ",
+                style = "font-size: 32px;",
+            ),
         ];
         flat = true,
         class = "col bg-$co q-ma-lg",
@@ -349,7 +345,7 @@ function view_impact(nu, na, co)
 
 end
 
-const IM =
+const CI_ =
     (modifier = "blue-grey", low = "yellow-8", moderate = "deep-orange", high = "red-8")
 
 function view_impact()
@@ -357,10 +353,10 @@ function view_impact()
     xelem(
         :div,
         [
-            view_impact("im_[0]", "Modifier", IM[Symbol("modifier")]),
-            view_impact("im_[1]", "Low", IM[Symbol("low")]),
-            view_impact("im_[2]", "Moderate", IM[Symbol("moderate")]),
-            view_impact("im_[3]", "High", IM[Symbol("high")]),
+            view_impact("im_[0]", "Modifier", CI_[Symbol("modifier")]),
+            view_impact("im_[1]", "Low", CI_[Symbol("low")]),
+            view_impact("im_[2]", "Moderate", CI_[Symbol("moderate")]),
+            view_impact("im_[3]", "High", CI_[Symbol("high")]),
         ];
         class = "row flex-center q-pa-lg",
         style = "max-width: 960px;",
@@ -371,8 +367,7 @@ end
 function view_variant_button()
 
     quasar(
-        :scroll__area;
-        style = "height: 480px",
+        :scroll__area,
         [
             xelem(
                 :div,
@@ -382,11 +377,12 @@ function view_variant_button()
                     size = "md",
                     color! = "ci_[vr.impact]",
                     label! = "vr.id",
-                    class = "q-ma-md",
+                    class = "q-ma-sm",
                     @click("ta = 't1'; va = vr")
                 ),
             ),
-        ],
+        ];
+        style = "height: 480px",
     )
 
 end
