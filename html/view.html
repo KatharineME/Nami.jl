@@ -1,0 +1,120 @@
+<q-layout view="hHh lpr fff">
+  <% view_header() %>
+
+  <space class="q-pa-xl"></space>
+
+  <div v-show="up" class="text-h4 q-pa-lg q-mt-xl text-center text-black">
+    Upload your variant database file
+  </div>
+
+  <div v-show="sp" class="text-h4 q-mt-xl text-center text-black">Loading</div>
+
+  <div v-show="sp" class="q-ma-lg text-center">
+    <q-spinner-grid color="indigo" size="4em" />
+  </div>
+
+  <div v-show="up" class="q-ma-lg">
+    <q-uploader
+      flat
+      auto-upload
+      bordered
+      color="grey-2"
+      text-color="black"
+      accept=".db"
+      max-files="1"
+      v-on:uploaded="function(event) { handle_event(event, 'ul') }"
+      v-on:finish="function(event) { handle_event(event, 'fi') }"
+      :url="'/____/upload/' + channel_"
+      style="max-width: 400px; min-width: 136px; margin: 0 auto"
+    ></q-uploader>
+  </div>
+
+  <div v-show="up" class="column flex-center">
+    <div class="text-h5 q-pa-md q-mt-lg text-center text-black">
+      Don't have one?
+    </div>
+    <q-btn
+      size="lg"
+      color="indigo"
+      label="Contact Us"
+      href="mailto:ka@biocausality.com"
+      class="q-ma-lg"
+    ></q-btn>
+  </div>
+
+  <div class="row flex-center">
+    <q-tabs
+      no-caps
+      align="justify"
+      active-bg-color="indigo-light"
+      indicator-color="indigo-light"
+      class="col-12 q-mt-xl"
+      style="max-width: 912px"
+      v-model="ta"
+      v-show="se"
+    >
+      <% view_tab("t1", "Variant") %> <% view_tab("t2", "Gene") %> <%
+      view_tab("t3", "Region") %>
+    </q-tabs>
+  </div>
+
+  <div v-show="se" class="row flex-center text-center">
+    <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px">
+      <q-tab-panel name="t1">
+        <% view_input("text", "rsID", "rs625655", :rs) %> <%
+        view_search_button(:vr) %> <% view_no_variant_found() %>
+
+        <div v-show="re">
+          <% view_search_title("Variant {{rs}}") %>
+
+          <div class="row q-gutter-lg q-mb-lg justify-center">
+            <% view_allele("va.ref", "Reference") %> <%
+            view_allele("va.allele1", "Your Allele 1") %> <%
+            view_allele("va.allele2", "Your Allele 2") %>
+          </div>
+
+          <div class="row q-gutter-sm justify-evenly">
+            <% view_variant_information("image/chromosome.png", "Chromosome",
+            "{{va.chrom}}") %> <% view_variant_information("image/position.png",
+            "Position", "{{va.pos}}") %> <%
+            view_variant_information("image/gene.png", "Gene", "{{va.gene}}") %>
+            <% view_variant_information("image/effect.png", "Effect",
+            "{{va.effect}}") %> <% view_variant_information("image/impact.png",
+            "Impact", "{{va.impact}}") %>
+          </div>
+        </div>
+      </q-tab-panel>
+
+      <q-tab-panel name="t2">
+        <% view_input("text", "Symbol", "UBR3", :sy) %> <%
+        view_search_button(:ge) %> <% view_no_variant_found() %>
+
+        <div v-show="re">
+          <% view_search_title("Gene {{sy}}") %> <% view_impact() %> <%
+          view_variant_button() %>
+        </div>
+      </q-tab-panel>
+
+      <q-tab-panel name="t3">
+        <q-select
+          outlined
+          clearable
+          :options="ch_"
+          label="Chromosome"
+          bg-color="grey-2"
+          class="q-pa-sm"
+          v-model="ch"
+        ></q-select>
+
+        <% view_input("number", "Start", "", :st) %> <% view_input("number",
+        "End", "", :en) %> <% view_search_button(:rg) %> <%
+        view_no_variant_found() %>
+
+        <div v-show="re">
+          <% view_search_title("Region {{ch}}:{{st}}-{{en}}") %> <%
+          view_impact() %> <% view_variant_button() %>
+        </div>
+      </q-tab-panel>
+    </q-tab-panels>
+  </div>
+</q-layout>

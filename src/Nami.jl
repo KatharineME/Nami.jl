@@ -1,16 +1,18 @@
 module Nami
 
+using Base.Iterators: take
+
 using CodecZlib: GzipDecompressorStream
 
-using .Iterators: take
-
-using SQLite: DB, drop!, Stmt
+using SQLite: DB, Stmt, drop!
 
 using SQLite.DBInterface: close!, execute
 
-function _get_allele(ng, re, al)
+function _get_allele(nu, re, al)
 
-    ng == "0" ? re : collect(take(eachsplit(al, ','), 3))[parse(Int, ng)]
+    nm = parse(Int, nu)
+
+    iszero(nm) ? re : collect(take(eachsplit(al, ','), 3))[nm]
 
 end
 
@@ -20,19 +22,18 @@ function _get_character_before_colon(st)
 
 end
 
-function make_variant_table!(db, vc)
+function make_variant_table!(da, vc)
 
     ta = "variant"
 
-    drop!(db, ta; ifexists = true)
+    drop!(da, ta; ifexists = true)
 
     execute(
-        db,
+        da,
         """
         CREATE TABLE IF NOT EXISTS
         $ta
-        (
-        chrom TEXT,
+        ( chrom TEXT,
         pos INTEGER,
         id TEXT,
         ref TEXT,
@@ -45,35 +46,35 @@ function make_variant_table!(db, vc)
         """,
     )
 
-    cr = 0
+    ch = 0
 
     for li in eachline(GzipDecompressorStream(open(vc)))
 
-        if li[1] == '#'
+        if startswith(li, '#')
 
             continue
 
         end
 
-        ch, ps, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
+        cr, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
 
-        if ch != cr
+        if cr != ch
 
-            @info "Chromosome $(cr = ch)"
+            @info "Chromosome $(ch = cr)"
 
         end
 
-        po = parse(Int, ps)
+        ps = parse(Int, po)
 
         ma = startswith(id, "Manta")
 
         if id == "."
 
-            id = "$ch:$po"
+            id = "$cr:$ps"
 
         elseif !startswith(id, "rs") && !ma
 
-            @error ch, po, id
+            @error cr ps id
 
         end
 
@@ -86,35 +87,37 @@ function make_variant_table!(db, vc)
             #TODO: Return annotation for multi-allelic variants
             ee, ia, ge = collect(take(eachsplit(io, '|'), 5))[2:4]
 
-            ef, ip = (titlecase(st) for st in (replace(ee, "_" => " "), ia))
+            ef, ip = (titlecase(st) for st in (replace(ee, '_' => ' '), ia))
 
         end
 
-        ng = _get_character_before_colon(sa)
+        nu = _get_character_before_colon(sa)
 
         if _get_character_before_colon(fo) != "GT"
 
             continue
 
-        elseif lastindex(ng) == 1
+        elseif lastindex(nu) == 1
 
-            a1, a2 = _get_allele(ng, re, al), ""
+            a1 = _get_allele(nu, re, al)
+
+            a2 = ""
 
         else
 
-            a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(ng, r"\||/"))
+            a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(nu, r"\||/"))
 
         end
 
         execute(
-            db,
+            da,
             """
             INSERT INTO
             variant 
             VALUES
             (
-            '$ch',
-            $po,
+            '$cr',
+            $ps,
             '$id',
             '$re',
             '$ef',
@@ -138,20 +141,18 @@ function _make_variant_dictionary(ro)
 
 end
 
-function _execute_and_close_statement(db, st)
+function _execute_statement(da, st)
 
-    sm = Stmt(db, st)
+    sa = Stmt(da, st)
 
-    return map(_make_variant_dictionary, execute(sm))
-
-    close!(sm)
+    return map(_make_variant_dictionary, execute(sa)), sa
 
 end
 
-function get_variant_by_id(db, id)
+function get_variant_by_id(da, id)
 
-    va_ = _execute_and_close_statement(
-        db,
+    va_, sa = _execute_statement(
+        da,
         """
         SELECT
             *
@@ -161,6 +162,8 @@ function get_variant_by_id(db, id)
             id = '$id'
         """,
     )
+
+    close!(sa)
 
     if isempty(va_)
 
@@ -174,10 +177,10 @@ function get_variant_by_id(db, id)
 
 end
 
-function get_variant(db, ge)
+function get_variant(da, ge)
 
-    _execute_and_close_statement(
-        db,
+    va_, sa = _execute_statement(
+        da,
         """
         SELECT
             *
@@ -188,19 +191,23 @@ function get_variant(db, ge)
         """,
     )
 
+    close!(sa)
+
+    return va_
+
 end
 
-function get_variant(db, ch, st, en)
+function get_variant(da, cr, st, en)
 
-    _execute_and_close_statement(
-        db,
+    va_, sa = _execute_statement(
+        da,
         """
         SELECT
             *
         FROM
             variant
         WHERE
-            chrom = '$ch'
+            chrom = '$cr'
         AND
             $st <= pos
         AND
@@ -208,11 +215,15 @@ function get_variant(db, ch, st, en)
         """,
     )
 
+    close!(sa)
+
+    return va_
+
 end
 
 function count_impact(va_)
 
-    mi = lo = me = hi = zero(Int32)
+    mo = lo = md = hi = zero(Int32)
 
     for va in va_
 
@@ -224,7 +235,7 @@ function count_impact(va_)
 
         elseif ip == "Modifier"
 
-            mi += 1
+            mo += 1
 
         elseif ip == "Low"
 
@@ -232,7 +243,7 @@ function count_impact(va_)
 
         elseif ip == "Moderate"
 
-            me += 1
+            md += 1
 
         elseif ip == "High"
 
@@ -246,7 +257,7 @@ function count_impact(va_)
 
     end
 
-    mi, lo, me, hi
+    mo, lo, md, hi
 
 end
 

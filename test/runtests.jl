@@ -2,7 +2,7 @@ using Nami
 
 using Test: @test
 
-# ----------------------------------------------------------------------------------------------- #
+#------------------------------------------------------------------------------------ #
 
 using SQLite: columns
 
@@ -12,7 +12,9 @@ const RE = true
 
 # ---- #
 
-const PA = joinpath(tempdir(), "Variant.db")
+const NA = "variant"
+
+const PA = joinpath(tempdir(), "$NA.db")
 
 if RE && isfile(PA)
 
@@ -29,11 +31,10 @@ const DA = Nami.DB(PA)
     Nami.make_variant_table!($DA, joinpath(@__DIR__, "data", "thin.1M.vcf.gz"))
 
 end
+#  144.643 ms (27998 allocations: 2.37 MiB) 
+# variant.db = 32K
 
-# 135.003 ms (27998 allocations: 2.37 MiB)
-# vcf.db = 32K
-
-columns(DA, "variant")
+columns(DA, NA)
 
 # ---- #
 
@@ -43,27 +44,27 @@ columns(DA, "variant")
 
 end
 
-# 2173.816849 seconds (292.56 M allocations: 25.604 GiB, 0.16% gc time, 0.00% compilation time)
-# vcf.db = 316M
-# vcf.db.gz = 79M
+# 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
+# variant.db = 337M
+# variant.db.gz = 82M
 
-columns(DA, "variant")
-
-# ---- #
-
-re = Nami.get_variant_by_id(DA, "rs10916692")
+columns(DA, NA)
 
 # ---- #
 
-re = Nami.get_variant(DA, "UBR3")
+Nami.get_variant_by_id(DA, "rs10916692")
 
 # ---- #
 
-re = Nami.get_variant(DA, 1, 0, 24000000)
+Nami.get_variant(DA, "UBR3")
 
 # ---- #
 
-re = Nami.get_variant(DA, "MT", 0, 100000)
+Nami.get_variant(DA, 1, 0, 24000000)
+
+# ---- #
+
+Nami.get_variant(DA, "MT", 0, 100000)
 
 # ---- #
 
