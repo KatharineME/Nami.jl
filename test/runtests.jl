@@ -4,7 +4,32 @@ using Test: @test
 
 # ----------------------------------------------------------------------------------------------- #
 
-using SQLite: DB, columns
+using SQLite: DB, columns, drop!, tables
+
+# ---- #
+
+# 8.625 ns (1 allocation: 32 bytes)
+for (id, io, re) in (
+#(".", "TODO", ("TODO", "TODO", "TODO")),
+#("rs", "TODO", ("TODO", "TODO", "TODO")),
+    ("Manta1234", "TODO", ("Manta", "Manta", "Manta")),)
+
+    @test Nami._get_effect_impact_gene(id, io) === re
+
+    @btime Nami._get_effect_impact_gene($id, $io)
+
+end
+
+# ---- #
+
+# 30.988 ns (0 allocations: 0 bytes)
+for (st, re) in (("Aa:Bb:Cc", "Aa"),)
+
+    @test Nami._get_character_before_colon(st) == re
+
+    @btime Nami._get_character_before_colon($st)
+
+end
 
 # ---- #
 
@@ -22,25 +47,35 @@ SQ = DB(FI)
 
 const DA = pkgdir(Nami, "data")
 
+function dro!()
+
+    drop!(SQ, "variant"; ifexists = true)
+
+end
+
 # ---- #
 
-# 58.226 ms (25681 allocations: 2.19 MiB)
-disable_logging(Info)
-@btime Nami.make_variant_table!(SQ, $(joinpath(DA, "thin.1M.vcf.gz")))
-disable_logging(Debug)
+const TH = joinpath(DA, "thin.1M.vcf.gz")
 
-# 32K
-readchomp(`ls -lh $FI`)
+dro!()
+Nami.make_variant_table!(SQ, TH)
+
+@test isone(lastindex(tables(SQ)))
+
+@code_warntype Nami.make_variant_table!(SQ, TH)
+
+# 58.000 ms (22535 allocations: 1.94 MiB)
+@btime Nami.make_variant_table!(SQ, TH) setup = dro!()
+
+@test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "32K"
 
 # ---- #
 
 # 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
-disable_logging(Info)
-@btime Nami.make_variant_table!(SQ, $(joinpath(DA, "735.vcf.gz")))
-disable_logging(Debug)
+dro!()
+@time Nami.make_variant_table!(SQ, joinpath(DA, "735.vcf.gz"))
 
-# 337M
-readchomp(`ls -lh $FI`)
+@test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "337M"
 
 # ---- #
 
