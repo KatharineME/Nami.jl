@@ -33,6 +33,14 @@ end
 
 # ---- #
 
+Nami._get_allele
+
+# ---- #
+
+Nami._get_alleles
+
+# ---- #
+
 const FI = joinpath(tempdir(), "_.db")
 
 if isfile(FI)
