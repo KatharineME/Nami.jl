@@ -1,24 +1,61 @@
 module Nami
 
-using Base.Iterators: take
-
 using CodecZlib: GzipDecompressorStream
 
-using SQLite: Stmt, drop!
+using SQLite: Stmt
 
 using SQLite.DBInterface: close!, execute
 
-function _get_allele(nu, re, al)
+function _get_effect_impact_gene(iv, io)
 
-    nm = parse(Int, nu)
+    # TODO: Find the allocation
+    if startswith(iv, "Manta")
 
-    iszero(nm) ? re : split(al, ',')[nm]
+        "Manta", "Manta", "Manta"
+
+    else
+
+        #TODO: Return annotation for multi-allelic variants
+        _, ee, ia, ge, _ = eachsplit(io, '|'; limit = 5)
+
+        titlecase(replace(ee, '_' => ' ')), titlecase(ia), ge
+
+    end
 
 end
 
-function _get_character_before_colon(st)
+function _get_character_before_colon(fo)
 
-    collect(take(eachsplit(st, ':'), 1))[1]
+    ca, _ = eachsplit(fo, ':'; limit = 2)
+
+    ca
+
+end
+
+function _get_allele(ia, re, al)
+
+    il = parse(Int, ia)
+
+    # TODO: Do not split allocate
+    iszero(il) ? re : split(al, ','; limit = il + 1)[il]
+
+end
+
+function _get_alleles(re, al, sa)
+
+    ca = _get_character_before_colon(sa)
+
+    if isone(lastindex(ca))
+
+        _get_allele(ca, re, al), ""
+
+    else
+
+        a1, a2 = (_get_allele(ia, re, al) for ia in eachsplit(ca, r"\||/"))
+
+        a1, a2
+
+    end
 
 end
 
@@ -26,28 +63,26 @@ function make_variant_table!(da, vc)
 
     ta = "variant"
 
-    drop!(da, ta; ifexists = true)
-
     execute(
         da,
         """
         CREATE TABLE IF NOT EXISTS
         $ta
-        ( chrom TEXT,
-        pos INTEGER,
-        id TEXT,
-        ref TEXT,
-        effect TEXT,
-        impact TEXT,
-        gene TEXT,
-        allele1 TEXT,
-        allele2 TEXT
+        (
+            chrom TEXT,
+            pos INTEGER,
+            id TEXT,
+            ref TEXT,
+            effect TEXT,
+            impact TEXT,
+            gene TEXT,
+            allele1 TEXT,
+            allele2 TEXT
         )
         """,
     )
 
-    ch = 0
-
+    # TODO: Read more efficiently
     for li in eachline(GzipDecompressorStream(open(vc)))
 
         if startswith(li, '#')
@@ -56,60 +91,23 @@ function make_variant_table!(da, vc)
 
         end
 
-        cr, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
+        cr, po, iv, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
 
-        if cr != ch
+        if iv == "."
 
-            ch = cr
-
-            @info "Chromosome $ch"
+            iv = "$cr:$po"
 
         end
 
-        ps = parse(Int, po)
-
-        ma = startswith(id, "Manta")
-
-        if id == "."
-
-            id = "$cr:$ps"
-
-        elseif !startswith(id, "rs") && !ma
-
-            @error cr ps id
-
-        end
-
-        if ma
-
-            ef = ip = ge = "Manta"
-
-        else
-
-            #TODO: Return annotation for multi-allelic variants
-            ee, ia, ge = collect(take(eachsplit(io, '|'), 5))[2:4]
-
-            ef, ip = (titlecase(st) for st in (replace(ee, '_' => ' '), ia))
-
-        end
-
-        nu = _get_character_before_colon(sa)
+        ef, ip, ge = _get_effect_impact_gene(iv, io)
 
         if _get_character_before_colon(fo) != "GT"
 
             continue
 
-        elseif lastindex(nu) == 1
-
-            a1 = _get_allele(nu, re, al)
-
-            a2 = ""
-
-        else
-
-            a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(nu, r"\||/"))
-
         end
+
+        a1, a2 = _get_alleles(re, al, sa)
 
         execute(
             da,
@@ -118,15 +116,15 @@ function make_variant_table!(da, vc)
             variant 
             VALUES
             (
-            '$cr',
-            $ps,
-            '$id',
-            '$re',
-            '$ef',
-            '$ip',
-            '$ge',
-            '$a1',
-            '$a2'
+                '$cr',
+                $po,
+                '$iv',
+                '$re',
+                '$ef',
+                '$ip',
+                '$ge',
+                '$a1',
+                '$a2'
             )
         """,
         )
@@ -151,7 +149,7 @@ function _execute_statement(da, st)
 
 end
 
-function get_variant_by_id(da, id)
+function get_variant_by_id(da, iv)
 
     va_, sa = _execute_statement(
         da,
@@ -161,7 +159,7 @@ function get_variant_by_id(da, id)
         FROM
             variant
         WHERE
-            id = '$id'
+            id = '$iv'
         """,
     )
 
