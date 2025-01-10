@@ -4,7 +4,7 @@ using Base.Iterators: take
 
 using CodecZlib: GzipDecompressorStream
 
-using SQLite: DB, Stmt, drop!
+using SQLite: Stmt, drop!
 
 using SQLite.DBInterface: close!, execute
 
@@ -12,7 +12,7 @@ function _get_allele(nu, re, al)
 
     nm = parse(Int, nu)
 
-    iszero(nm) ? re : collect(take(eachsplit(al, ','), 3))[nm]
+    iszero(nm) ? re : split(al, ',')[nm]
 
 end
 
@@ -60,7 +60,9 @@ function make_variant_table!(da, vc)
 
         if cr != ch
 
-            @info "Chromosome $(ch = cr)"
+            ch = cr
+
+            @info "Chromosome $ch"
 
         end
 
