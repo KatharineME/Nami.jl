@@ -6,6 +6,8 @@ using Test: @test
 
 using SQLite: DB, columns, drop!, tables
 
+# TODO: Test and benchmark each function within its loop.
+
 # ---- #
 
 # 8.625 ns (1 allocation: 32 bytes)
@@ -70,20 +72,22 @@ Nami.make_variant_table!(SQ, TH)
 
 @test isone(lastindex(tables(SQ)))
 
+@test split(readchomp(`ls -lh $FI`); limit = 6)[5] === "32K"
+
+# ---- #
+
 @code_warntype Nami.make_variant_table!(SQ, TH)
 
 # 58.000 ms (22535 allocations: 1.94 MiB)
 @btime Nami.make_variant_table!(SQ, TH) setup = dro!()
 
-@test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "32K"
+# ---- #
+
+Nami._make_variant_dictionary
 
 # ---- #
 
-# 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
-dro!()
-@time Nami.make_variant_table!(SQ, joinpath(DA, "735.vcf.gz"))
-
-@test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "337M"
+Nami._execute_statement
 
 # ---- #
 
@@ -104,3 +108,11 @@ Nami.get_variant(SQ, "MT", 0, 100000)
 # ---- #
 
 Nami.count_impact(VA_)
+
+# ---- #
+
+# 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
+dro!()
+@time Nami.make_variant_table!(SQ, joinpath(DA, "735.vcf.gz"))
+
+# TODO: Check 337M.
