@@ -145,7 +145,7 @@ function _execute_statement(da, st)
 
     sa = Stmt(da, st)
 
-    return map(_make_variant_dictionary, execute(sa)), sa
+    map(_make_variant_dictionary, execute(sa)), sa
 
 end
 
@@ -193,7 +193,7 @@ function get_variant(da, ge)
 
     close!(sa)
 
-    return va_
+    va_
 
 end
 
@@ -217,7 +217,7 @@ function get_variant(da, cr, st, en)
 
     close!(sa)
 
-    return va_
+    va_
 
 end
 
