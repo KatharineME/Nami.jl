@@ -135,7 +135,7 @@ end
 
 function _make_variant_dictionary(ro)
 
-    va = Dict{Symbol, Union{Int, AbstractString}}(
+    Dict{Symbol, Union{Int, AbstractString}}(
         zip((:chrom, :pos, :id, :ref, :effect, :impact, :gene, :allele1, :allele2), ro),
     )
 
