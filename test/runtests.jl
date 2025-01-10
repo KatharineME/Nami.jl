@@ -4,68 +4,60 @@ using Test: @test
 
 # ----------------------------------------------------------------------------------------------- #
 
-using SQLite: columns
+using SQLite: DB, columns
 
 # ---- #
 
-const RE = true
+const FI = joinpath(tempdir(), "_.db")
 
-# ---- #
+if isfile(FI)
 
-const NA = "variant"
-
-const PA = joinpath(tempdir(), "$NA.db")
-
-if RE && isfile(PA)
-
-    rm(PA)
+    rm(FI)
 
 end
 
-const DA = Nami.DB(PA)
+SQ = DB(FI)
 
 # ---- #
 
-@btime if $RE
-
-    Nami.make_variant_table!($DA, joinpath(@__DIR__, "data", "thin.1M.vcf.gz"))
-
-end
-#  144.643 ms (27998 allocations: 2.37 MiB) 
-# variant.db = 32K
-
-columns(DA, NA)
+const DA = pkgdir(Nami, "data")
 
 # ---- #
 
-@time if RE
+# 58.226 ms (25681 allocations: 2.19 MiB)
+disable_logging(Info)
+@btime Nami.make_variant_table!(SQ, $(joinpath(DA, "thin.1M.vcf.gz")))
+disable_logging(Debug)
 
-    Nami.make_variant_table!(DA, joinpath(@__DIR__, "data", "735.vcf.gz"))
+# 32K
+readchomp(`ls -lh $FI`)
 
-end
+# ---- #
 
 # 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
-# variant.db = 337M
-# variant.db.gz = 82M
+disable_logging(Info)
+@btime Nami.make_variant_table!(SQ, $(joinpath(DA, "735.vcf.gz")))
+disable_logging(Debug)
 
-columns(DA, NA)
-
-# ---- #
-
-Nami.get_variant_by_id(DA, "rs10916692")
+# 337M
+readchomp(`ls -lh $FI`)
 
 # ---- #
 
-Nami.get_variant(DA, "UBR3")
+Nami.get_variant_by_id(SQ, "rs10916692")
 
 # ---- #
 
-Nami.get_variant(DA, 1, 0, 24000000)
+Nami.get_variant(SQ, "UBR3")
 
 # ---- #
 
-Nami.get_variant(DA, "MT", 0, 100000)
+const VA_ = Nami.get_variant(SQ, 1, 0, 2400000)
 
 # ---- #
 
-Nami.count_impact(Nami.get_variant(DA, 1, 0, 2400000))
+Nami.get_variant(SQ, "MT", 0, 100000)
+
+# ---- #
+
+Nami.count_impact(VA_)
