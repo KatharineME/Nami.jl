@@ -4,12 +4,12 @@ Manifest.toml
 
 # ----------------------------------------------------------------------------------------------- #
 
-log
+data/
+
+!data/thin.1M.vcf.gz
+
+log/
 
 config/secrets.jl
 
-public/upload
-
-data
-
-!data/thin.1M.vcf.gz
+public/upload/

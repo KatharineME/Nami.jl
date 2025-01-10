@@ -1,32 +1,14 @@
-🌊
-
-[Install `julia`](https://julialang.org/downloads).
-
-```bash
-git clone https://github.com/KatharineME/Nami.jl
-```
-
-```bash
-cd Nami.jl
-```
-
-```bash
-julia --project
-```
+# 🌊
 
 ```julia
-using Pkg; Pkg.instantiate()
+using GenieFramework
+
+Genie.loadapp()
+
+up(; async = false)
 ```
 
-```julia
-using GenieFramework; Genie.loadapp(); up()
-```
-
-Open http://127.0.0.1:8000.
-
-Upload `Nami.jl/data/thin.1M.vcf.gz`.
-
-Search the suggested variant `rs625655` or gene `UBR3` and any region larger than one million bases to get hits.
+http://localhost:8000
 
 ---
 
