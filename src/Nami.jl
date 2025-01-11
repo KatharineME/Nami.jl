@@ -63,6 +63,8 @@ function make_variant_table!(da, vc)
 
     ta = "variant"
 
+    # TODO: Learn to speed up SQL
+
     execute(
         da,
         """

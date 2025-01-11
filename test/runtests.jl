@@ -72,11 +72,11 @@ Nami.make_variant_table!(SQ, TH)
 
 @test isone(lastindex(tables(SQ)))
 
-@test split(readchomp(`ls -lh $FI`); limit = 6)[5] === "32K"
+@test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "32K"
 
 # ---- #
 
-@code_warntype Nami.make_variant_table!(SQ, TH)
+#@code_warntype Nami.make_variant_table!(SQ, TH)
 
 # 58.000 ms (22535 allocations: 1.94 MiB)
 #@btime Nami.make_variant_table!(SQ, TH) setup = dro!()
