@@ -2,6 +2,8 @@ using Revise: includet
 
 using SQLite.DBInterface: close!
 
+using SQLite: DB
+
 using Nami
 
 includet("view.jl")
@@ -31,7 +33,7 @@ const CO_ = Dict(
 
     @in na = ""
 
-    @in da = Nami.DB()
+    @in da = DB()
 
     # ---- #
 
@@ -45,7 +47,7 @@ const CO_ = Dict(
 
         close!(da)
 
-        da = Nami.DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
+        da = DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
 
     end
 
