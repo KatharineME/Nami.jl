@@ -18,7 +18,7 @@ for (id, io, re) in (
 
     @test Nami._get_effect_impact_gene(id, io) === re
 
-    @btime Nami._get_effect_impact_gene($id, $io)
+    #@btime Nami._get_effect_impact_gene($id, $io)
 
 end
 
@@ -29,7 +29,7 @@ for (st, re) in (("Aa:Bb:Cc", "Aa"),)
 
     @test Nami._get_character_before_colon(st) == re
 
-    @btime Nami._get_character_before_colon($st)
+    #@btime Nami._get_character_before_colon($st)
 
 end
 
@@ -79,7 +79,7 @@ Nami.make_variant_table!(SQ, TH)
 @code_warntype Nami.make_variant_table!(SQ, TH)
 
 # 58.000 ms (22535 allocations: 1.94 MiB)
-@btime Nami.make_variant_table!(SQ, TH) setup = dro!()
+#@btime Nami.make_variant_table!(SQ, TH) setup = dro!()
 
 # ---- #
 
@@ -114,4 +114,4 @@ Nami.count_impact(VA_)
 # 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
 # 1069.644638 seconds (328.96 M allocations: 25.645 GiB, 0.27% gc time)
 dro!()
-@time Nami.make_variant_table!(SQ, joinpath(DA, "735.vcf.gz"))
+#@time Nami.make_variant_table!(SQ, joinpath(DA, "735.vcf.gz"))
