@@ -108,7 +108,6 @@ Nami.count_impact(VA_)
 
 # ---- #
 
-# 2838.857915 seconds (369.75 M allocations: 29.158 GiB, 0.20% gc time, 0.00% compilation time) 
-# 1069.644638 seconds (328.96 M allocations: 25.645 GiB, 0.27% gc time)
+# 1078.705501 seconds (328.96 M allocations: 25.391 GiB, 0.25% gc time)
 dro!()
 @time Nami.make_variant_table!(DA, joinpath(DT, "735.vcf.gz"))
