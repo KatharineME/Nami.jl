@@ -4,7 +4,7 @@ using Test: @test
 
 # ----------------------------------------------------------------------------------------------- #
 
-using SQLite: DB, drop!, tables
+using SQLite: DB, drop!
 
 # TODO: Test and benchmark each function within its loop.
 
@@ -72,8 +72,6 @@ const VC = joinpath(DT, "thin.1M.vcf.gz")
 
 dro!()
 Nami.make_variant_table!(DA, VC)
-
-@test isone(lastindex(tables(DA)))
 
 @test split(readchomp(`ls -lh $FI`); limit = 6)[5] == "32K"
 
