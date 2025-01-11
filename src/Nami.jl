@@ -6,52 +6,52 @@ using SQLite: Stmt
 
 using SQLite.DBInterface: close!, execute
 
-function _get_effect_impact_gene(iv, io)
+function _get_effect_impact_gene(id, io)
 
     # TODO: Find the allocation
-    if startswith(iv, "Manta")
+    if startswith(id, "Manta")
 
         "Manta", "Manta", "Manta"
 
     else
 
         #TODO: Return annotation for multi-allelic variants
-        _, ee, ia, ge, _ = eachsplit(io, '|'; limit = 5)
+        _, ef, ip, ge, _ = eachsplit(io, '|'; limit = 5)
 
-        titlecase(replace(ee, '_' => ' ')), titlecase(ia), ge
+        titlecase(replace(ef, '_' => ' ')), titlecase(ip), ge
 
     end
 
 end
 
-function _get_character_before_colon(fo)
+function _get_before_colon(st)
 
-    ca, _ = eachsplit(fo, ':'; limit = 2)
+    be, _ = eachsplit(st, ':'; limit = 2)
 
-    ca
+    be
 
 end
 
-function _get_allele(ia, re, al)
+function _get_allele(gt, re, al)
 
-    il = parse(Int, ia)
+    id = parse(Int, gt)
 
     # TODO: Do not split allocate
-    iszero(il) ? re : split(al, ','; limit = il + 1)[il]
+    iszero(id) ? re : split(al, ','; limit = id + 1)[id]
 
 end
 
 function _get_alleles(re, al, sa)
 
-    ca = _get_character_before_colon(sa)
+    gt = _get_before_colon(sa)
 
-    if isone(lastindex(ca))
+    if isone(lastindex(gt))
 
-        _get_allele(ca, re, al), ""
+        _get_allele(gt, re, al), ""
 
     else
 
-        a1, a2 = (_get_allele(ia, re, al) for ia in eachsplit(ca, r"\||/"))
+        a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(gt, r"\||/"))
 
         a1, a2
 
@@ -59,29 +59,28 @@ function _get_alleles(re, al, sa)
 
 end
 
-function make_variant_table!(da, vc)
+const TA = "Variant"
 
-    ta = "variant"
+function make_variant_table!(da, vc)
 
     # TODO: Learn to speed up SQL
 
     execute(
         da,
         """
-        CREATE TABLE IF NOT EXISTS
-        $ta
+        CREATE TABLE
+        $TA 
         (
-            chrom TEXT,
-            pos INTEGER,
-            id TEXT,
-            ref TEXT,
-            effect TEXT,
-            impact TEXT,
-            gene TEXT,
-            allele1 TEXT,
-            allele2 TEXT
-        )
-        """,
+            CHROM TEXT,
+            POS INTEGER,
+            ID TEXT,
+            REF TEXT,
+            Effect TEXT,
+            Impact TEXT,
+            Gene TEXT,
+            Allele1 TEXT,
+            Allele2 TEXT
+        )""",
     )
 
     # TODO: Read more efficiently
@@ -93,21 +92,21 @@ function make_variant_table!(da, vc)
 
         end
 
-        cr, po, iv, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
+        ch, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
 
-        if iv == "."
-
-            iv = "$cr:$po"
-
-        end
-
-        ef, ip, ge = _get_effect_impact_gene(iv, io)
-
-        if _get_character_before_colon(fo) != "GT"
+        if _get_before_colon(fo) != "GT"
 
             continue
 
         end
+
+        if id == "."
+
+            id = "$ch:$po"
+
+        end
+
+        ef, ip, ge = _get_effect_impact_gene(id, io)
 
         a1, a2 = _get_alleles(re, al, sa)
 
@@ -115,121 +114,100 @@ function make_variant_table!(da, vc)
             da,
             """
             INSERT INTO
-            variant 
+            $TA
             VALUES
             (
-                '$cr',
+                '$ch',
                 $po,
-                '$iv',
+                '$id',
                 '$re',
                 '$ef',
                 '$ip',
                 '$ge',
                 '$a1',
                 '$a2'
-            )
-        """,
+            )""",
         )
 
     end
 
 end
 
-function _make_variant_dictionary(ro)
-
-    Dict{Symbol, Union{Int, AbstractString}}(
-        zip((:chrom, :pos, :id, :ref, :effect, :impact, :gene, :allele1, :allele2), ro),
-    )
-
-end
-
-function _execute_statement(da, st)
+function _state_execute_close(da, st)
 
     sa = Stmt(da, st)
 
-    map(_make_variant_dictionary, execute(sa)), sa
-
-end
-
-function get_variant_by_id(da, iv)
-
-    va_, sa = _execute_statement(
-        da,
-        """
-        SELECT
-            *
-        FROM
-            variant
-        WHERE
-            id = '$iv'
-        """,
+    va_ = map(
+        ro -> Dict{Symbol, Union{Int, String}}(
+            zip((:CHROM, :POS, :ID, :REF, :Effect, :Impact, :Gene, :Allele1, :Allele2), ro),
+        ),
+        execute(sa),
     )
 
     close!(sa)
 
-    if isempty(va_)
+    va_
 
-        Dict{Symbol, Union{Int, AbstractString}}()
+end
 
-    else
+function get_variant_by_id(da, id)
 
-        va_[1]
+    va_ = _state_execute_close(
+        da,
+        """
+        SELECT
+        *
+        FROM
+        $TA
+        WHERE
+        id = '$id'""",
+    )
 
-    end
+    isempty(va_) ? Dict{Symbol, Union{Int, String}}() : va_[]
 
 end
 
 function get_variant(da, ge)
 
-    va_, sa = _execute_statement(
+    _state_execute_close(
         da,
         """
         SELECT
-            *
+        *
         FROM
-            variant
+        $TA
         WHERE
-            gene = '$ge'
-        """,
+        gene = '$ge'""",
     )
-
-    close!(sa)
-
-    va_
 
 end
 
-function get_variant(da, cr, st, en)
+function get_variant(da, ch, st, en)
 
-    va_, sa = _execute_statement(
+    _state_execute_close(
         da,
         """
         SELECT
-            *
+        *
         FROM
-            variant
+        $TA
         WHERE
-            chrom = '$cr'
+        chrom = '$ch'
         AND
-            $st <= pos
+        $st <= pos
         AND
-            pos <= $en
-        """,
+        pos <= $en""",
     )
-
-    close!(sa)
-
-    va_
 
 end
 
 function count_impact(va_)
 
-    mo = lo = md = hi = zero(Int32)
+    mo = lo = md = hi = zero(Int)
 
     for va in va_
 
-        ip = va[:impact]
+        ip = va[:Impact]
 
         if ip == "Manta"
 
@@ -250,10 +228,6 @@ function count_impact(va_)
         elseif ip == "High"
 
             hi += 1
-
-        else
-
-            error(ip)
 
         end
 
