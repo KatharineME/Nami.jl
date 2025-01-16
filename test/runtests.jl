@@ -61,11 +61,12 @@ end
 const VC = joinpath(DA, "thin.1M.vcf.gz")
 
 dro!()
+
 Nami.make_variant_table!(DT, VC)
 
 @test filesize(DT.file) === 32768
 
-@code_warntype Nami.make_variant_table!(DT, VC)
+#@code_warntype Nami.make_variant_table!(DT, VC)
 
 # 58.479 ms (22535 allocations: 1.92 MiB)
 #@btime Nami.make_variant_table!(DT, VC) setup = dro!() evals = 1
@@ -96,7 +97,8 @@ Nami.count_impact(VA_)
 
 # ---- #
 
+dro!()
+
 # 1078.705501 seconds (328.96 M allocations: 25.391 GiB, 0.25% gc time)
 # 2489.269564 seconds (328.95 M allocations: 25.318 GiB, 0.16% gc time)
-dro!()
 #@time Nami.make_variant_table!(DT, joinpath(DA, "735.vcf.gz"))
