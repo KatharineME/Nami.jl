@@ -1,5 +1,7 @@
 module Nami
 
+# ----------------------------------------------------------------------------------------------- #
+
 using CodecZlib: GzipDecompressorStream
 
 using SQLite: Stmt
