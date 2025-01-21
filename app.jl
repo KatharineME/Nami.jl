@@ -6,7 +6,7 @@ using SQLite.DBInterface: close!
 
 using Nami
 
-# ---- #
+#
 
 const UP = pkgdir(Nami, "public", "upload")
 
@@ -17,7 +17,7 @@ const IP_HE = Dict(
     "High" => "#ff0000",
 )
 
-# ---- #
+#
 
 @app begin
 
@@ -31,7 +31,7 @@ const IP_HE = Dict(
 
     @in da = DB()
 
-    # ---- #
+    #
 
     @event ul begin
 
@@ -55,7 +55,7 @@ const IP_HE = Dict(
 
     end
 
-    # ---- #
+    #
 
     @in ta = ""
 
@@ -63,7 +63,7 @@ const IP_HE = Dict(
 
     @out re = false
 
-    # ---- #
+    #
 
     @in va = Dict{Symbol, Union{Int, AbstractString}}()
 
@@ -71,17 +71,17 @@ const IP_HE = Dict(
 
     @in vr = false
 
-    # ---- #
+    #
 
     @out va_ = Dict{Symbol, Union{Int, AbstractString}}[]
 
-    # ---- #
+    #
 
     @in sy = ""
 
     @in ge = false
 
-    # ---- #
+    #
 
     @out ch_ = vcat(string.(collect(range(1, 22))), ["X", "Y", "MT"])
 
@@ -93,13 +93,13 @@ const IP_HE = Dict(
 
     @in rg = false
 
-    # ---- #
+    #
 
     @out IP_HE = IP_HE
 
     @out im_ = (0, 0, 0, 0)
 
-    # ---- #
+    #
 
     @onchange rs, sy, ch, st, en begin
 
@@ -151,7 +151,7 @@ const IP_HE = Dict(
 
 end
 
-# ---- #
+#
 
 function view_header()
 
@@ -356,6 +356,6 @@ function view_variant_button()
 
 end
 
-# ---- #
+#
 
 @page "/" path"html/view.html" layout = path"html/layout.html"
