@@ -65,22 +65,22 @@
         view_search_button(:vr) %> <% view_no_variant_found() %>
 
         <div v-show="re">
-          <% view_search_title("Variant {{rs}}") %>
+          <% view_search_title("Variant {{rd}}") %>
 
           <div class="row q-gutter-lg q-mb-lg justify-center">
-            <% view_allele("va.ref", "Reference") %> <%
-            view_allele("va.allele1", "Your Allele 1") %> <%
-            view_allele("va.allele2", "Your Allele 2") %>
+            <% view_allele("va.REF", "Reference") %> <%
+            view_allele("va.Allele1", "Your Allele 1") %> <%
+            view_allele("va.Allele2", "Your Allele 2") %>
           </div>
 
           <div class="row q-gutter-sm justify-evenly">
             <% view_variant_information("image/chromosome.png", "Chromosome",
-            "{{va.chrom}}") %> <% view_variant_information("image/position.png",
-            "Position", "{{va.pos}}") %> <%
-            view_variant_information("image/gene.png", "Gene", "{{va.gene}}") %>
+            "{{va.CHROM}}") %> <% view_variant_information("image/position.png",
+            "Position", "{{va.POS}}") %> <%
+            view_variant_information("image/gene.png", "Gene", "{{va.Gene}}") %>
             <% view_variant_information("image/effect.png", "Effect",
-            "{{va.effect}}") %> <% view_variant_information("image/impact.png",
-            "Impact", "{{va.impact}}") %>
+            "{{va.Effect}}") %> <% view_variant_information("image/impact.png",
+            "Impact", "{{va.Impact}}") %>
           </div>
         </div>
       </q-tab-panel>

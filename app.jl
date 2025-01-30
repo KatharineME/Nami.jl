@@ -10,11 +10,12 @@ using Nami
 
 const UP = pkgdir(Nami, "public", "upload")
 
+# TODO: Hex
 const IP_HE = Dict(
-    "Modifier" => "#0000ff",
-    "Low" => "#00ff00",
-    "Moderate" => "#ffff00",
-    "High" => "#ff0000",
+    "Modifier" => "blue-grey",
+    "Low" => "yellow",
+    "Moderate" => "orange",
+    "High" => "red",
 )
 
 #
@@ -69,6 +70,8 @@ const IP_HE = Dict(
 
     @in rs = ""
 
+    @out rd = ""
+
     @in vr = false
 
     #
@@ -103,6 +106,8 @@ const IP_HE = Dict(
 
     @onchange rs, sy, ch, st, en begin
 
+        @info "rs changed" rs
+
         em = false
 
         re = false
@@ -111,7 +116,19 @@ const IP_HE = Dict(
 
     @onchange va begin
 
-        isempty(va) ? em = true : re = true
+        @info "va changed" va
+
+        if isempty(va)
+
+            em = true
+
+        else
+
+            rd = va[:ID]
+
+            re = true
+
+        end
 
     end
 
@@ -344,10 +361,10 @@ function view_variant_button()
                     :btn;
                     unelevated = true,
                     size = "md",
-                    color! = "co_[vi.impact]",
-                    label! = "vi.id",
+                    color! = "IP_HE[vi.Impact]",
+                    label! = "vi.ID",
                     class = "q-ma-sm",
-                    @click("ta = 't1'; va = vi")
+                    @click("ta = 't1'; va = vi;")
                 ),
             ),
         ];
