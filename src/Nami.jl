@@ -88,7 +88,7 @@ function make_variant_table!(da, vc)
     # TODO: Read more efficiently
     for li in eachline(GzipDecompressorStream(open(vc)))
 
-        if startswith(li, '#')
+        if li[1] == '#'
 
             continue
 
