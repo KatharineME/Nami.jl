@@ -1,13 +1,13 @@
 .DS_Store
 
+*log
+
 # ----------------------------------------------------------------------------------------------- #
 
-data/
+data/*
 
 !data/thin.1M.vcf.gz
 
-log/
-
 config/secrets.jl
 
-public/upload/
+public/upload
