@@ -2,7 +2,7 @@
 
 julia_version = "1.11.4"
 manifest_format = "2.0"
-project_hash = "5a24c413ca809651dd9d7d34df63a73d0239e0b6"
+project_hash = "3f1a8ba7b6c02e714e48d46cd6efd17cc739a9ea"
 
 [[deps.ArgParse]]
 deps = ["Logging", "TextWrap"]
@@ -21,6 +21,12 @@ version = "1.11.0"
 [[deps.Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 version = "1.11.0"
+
+[[deps.BenchmarkTools]]
+deps = ["Compat", "JSON", "Logging", "Printf", "Profile", "Statistics", "UUIDs"]
+git-tree-sha1 = "e38fbc49a620f5d0b660d7f543db1009fe0f8336"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "1.6.0"
 
 [[deps.BitFlags]]
 git-tree-sha1 = "0691e34b3bb8be9307330f88d1a3c3f25466c24d"
@@ -59,9 +65,9 @@ version = "0.12.11"
 
 [[deps.CommonMark]]
 deps = ["Crayons", "PrecompileTools"]
-git-tree-sha1 = "3faae67b8899797592335832fccf4b3c80bb04fa"
+git-tree-sha1 = "5fdf00d1979fd4883b44b754fc3423175c9504b4"
 uuid = "a80b9123-70ca-4bc0-993e-6e3bcb318db6"
-version = "0.8.15"
+version = "0.8.16"
 
 [[deps.Compat]]
 deps = ["TOML", "UUIDs"]
@@ -113,9 +119,9 @@ version = "1.7.0"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "1d0a14036acb104d9e89698bd408f63ab58cdc82"
+git-tree-sha1 = "4e1fe97fdaed23e9dc21d4d664bea76b65fc50a0"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.18.20"
+version = "0.18.22"
 
 [[deps.DataValueInterfaces]]
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
@@ -156,9 +162,9 @@ version = "0.10.14"
 
 [[deps.EzXML]]
 deps = ["Printf", "XML2_jll"]
-git-tree-sha1 = "380053d61bb9064d6aa4a9777413b40429c79901"
+git-tree-sha1 = "f6f44ab51d253f851d2084c1ac761bb679798408"
 uuid = "8f5d6c58-4d21-5cfd-889c-e3ad7ee6a615"
-version = "1.2.0"
+version = "1.2.1"
 
 [[deps.FilePathsBase]]
 deps = ["Compat", "Dates"]
@@ -216,10 +222,10 @@ uuid = "4e5d9629-6565-4102-a9ff-45c707eb060e"
 version = "2.12.1"
 
 [[deps.GenieFramework]]
-deps = ["GarishPrint", "Genie", "GenieAutoReload", "GenieDevTools", "GeniePackageManager", "Reexport", "Revise", "Stipple", "StipplePivotTable", "StipplePlotly", "StippleTable", "StippleTabs", "StippleUI"]
-git-tree-sha1 = "3e03099d1d201a2af68ca593a860713c8d0a0003"
+deps = ["GarishPrint", "Genie", "GenieAutoReload", "GenieDevTools", "GeniePackageManager", "Reexport", "Revise", "Stipple", "StipplePlotly", "StippleTable", "StippleTabs", "StippleUI"]
+git-tree-sha1 = "38a67cd15769d49c28acd2ae1dd2a229d0a24de1"
 uuid = "a59fdf5c-6bf0-4f5d-949c-a137c9e2f353"
-version = "2.9.0"
+version = "2.7.0"
 
 [[deps.GeniePackageManager]]
 deps = ["Base64", "Genie", "Pkg"]
@@ -296,11 +302,17 @@ git-tree-sha1 = "a007feb38b422fbdab534406aeca1b86823cb4d6"
 uuid = "692b3bcd-3c85-4b1f-b108-f13ce0eb3210"
 version = "1.7.0"
 
+[[deps.JSON]]
+deps = ["Dates", "Mmap", "Parsers", "Unicode"]
+git-tree-sha1 = "31e996f0a15c7b280ba9f76636b3ff9e2ae58c9a"
+uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+version = "0.21.4"
+
 [[deps.JSON3]]
 deps = ["Dates", "Mmap", "Parsers", "PrecompileTools", "StructTypes", "UUIDs"]
-git-tree-sha1 = "1d322381ef7b087548321d3f878cb4c9bd8f8f9b"
+git-tree-sha1 = "196b41e5a854b387d99e5ede2de3fcb4d0422aae"
 uuid = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
-version = "1.14.1"
+version = "1.14.2"
 
     [deps.JSON3.extensions]
     JSON3ArrowExt = ["ArrowTypes"]
@@ -382,9 +394,9 @@ uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
 version = "3.1.0"
 
 [[deps.MIMEs]]
-git-tree-sha1 = "1833212fd6f580c20d4291da9c1b4e8a655b128e"
+git-tree-sha1 = "c64d943587f7187e751162b3b84445bbbd79f691"
 uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
-version = "1.0.0"
+version = "1.1.0"
 
 [[deps.MacroTools]]
 git-tree-sha1 = "72aebe0b5051e5143a079a4685a46da330a40472"
@@ -536,6 +548,10 @@ deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 version = "1.11.0"
 
+[[deps.Profile]]
+uuid = "9abbd945-dff8-562f-b5e8-e1ebf5ef1b79"
+version = "1.11.0"
+
 [[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "StyledStrings", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
@@ -571,9 +587,9 @@ version = "1.3.1"
 
 [[deps.Revise]]
 deps = ["CodeTracking", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "REPL", "Requires", "UUIDs", "Unicode"]
-git-tree-sha1 = "9bb80533cb9769933954ea4ffbecb3025a783198"
+git-tree-sha1 = "5cf59106f9b47014c58c5053a1ce09c0a2e0333c"
 uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "3.7.2"
+version = "3.7.3"
 weakdeps = ["Distributed"]
 
     [deps.Revise.extensions]
@@ -647,12 +663,6 @@ version = "0.28.22"
     DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
     JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
     OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-
-[[deps.StipplePivotTable]]
-deps = ["Stipple", "StippleUI", "Tables"]
-git-tree-sha1 = "375bcda3d1b9430e9879ae63c471d9241ba65328"
-uuid = "adab0226-ee3c-44de-8f2f-393b1bf1e936"
-version = "0.4.2"
 
 [[deps.StipplePlotly]]
 deps = ["DataFrames", "Genie", "Requires", "Stipple"]
@@ -759,9 +769,9 @@ uuid = "30578b45-9adc-5946-b283-645ec420af67"
 version = "0.4.1"
 
 [[deps.URIs]]
-git-tree-sha1 = "67db6cc7b3821e19ebe75791a9dd19c9b1188f2b"
+git-tree-sha1 = "cbbebadbcc76c5ca1cc4b4f3b0614b3e603b5000"
 uuid = "5c2747f8-b7ea-4ff2-ba2e-563bfd36b1d4"
-version = "1.5.1"
+version = "1.5.2"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]

@@ -3,17 +3,17 @@
 
   <space class="q-pa-xl"></space>
 
-  <div v-show="up" class="text-h4 q-pa-lg q-mt-xl text-center text-black">
+  <div v-show="b1" class="text-h4 q-pa-lg q-mt-xl text-center text-black">
     Upload your variant database file
   </div>
 
-  <div v-show="sp" class="text-h4 q-mt-xl text-center text-black">Loading</div>
+  <div v-show="b2" class="text-h4 q-mt-xl text-center text-black">Loading</div>
 
-  <div v-show="sp" class="q-ma-lg text-center">
+  <div v-show="b2" class="q-ma-lg text-center">
     <q-spinner-grid color="indigo" size="4em" />
   </div>
 
-  <div v-show="up" class="q-ma-lg">
+  <div v-show="b1" class="q-ma-lg">
     <q-uploader
       flat
       auto-upload
@@ -22,14 +22,14 @@
       text-color="black"
       accept=".db"
       max-files="1"
-      v-on:uploaded="function(event) { handle_event(event, 'ul') }"
+      v-on:uploaded="function(event) { handle_event(event, 'up') }"
       v-on:finish="function(event) { handle_event(event, 'fi') }"
       :url="'/____/upload/' + channel_"
       style="max-width: 800px; min-width: 400px; margin: 0 auto"
     ></q-uploader>
   </div>
 
-  <div v-show="up" class="column flex-center">
+  <div v-show="b1" class="column flex-center">
     <div class="text-h5 q-pa-md q-mt-lg text-center text-black">
       Don't have one?
     </div>
@@ -37,7 +37,7 @@
       size="lg"
       color="indigo"
       label="Contact Us"
-      href="mailto:ka@caucell.com"
+      href="mailto:ka@biocausality.com"
       class="q-ma-lg"
     ></q-btn>
   </div>
@@ -51,21 +51,21 @@
       class="col-12 q-mt-xl"
       style="max-width: 912px"
       v-model="ta"
-      v-show="se"
+      v-show="b3"
     >
       <% view_tab("t1", "Variant") %> <% view_tab("t2", "Gene") %> <%
       view_tab("t3", "Region") %>
     </q-tabs>
   </div>
 
-  <div v-show="se" class="row flex-center text-center">
+  <div v-show="b3" class="row flex-center text-center">
     <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px">
       <q-tab-panel name="t1">
-        <% view_input("text", "rsID", "rs625655", :rs) %> <%
-        view_search_button(:vr) %> <% view_no_variant_found() %>
+        <% view_input("text", "rsID", "rs625655", :r1) %> <%
+        view_search_button(:u1) %> <% view_no_variant_found() %>
 
-        <div v-show="re">
-          <% view_search_title("Variant {{rd}}") %>
+        <div v-show="b5">
+          <% view_search_title("Variant {{r2}}") %>
 
           <div class="row q-gutter-lg q-mb-lg justify-center">
             <% view_allele("va.REF", "Reference") %> <%
@@ -80,17 +80,19 @@
             view_variant_information("image/gene.png", "Gene", "{{va.Gene}}") %>
             <% view_variant_information("image/effect.png", "Effect",
             "{{va.Effect}}") %> <% view_variant_information("image/impact.png",
-            "Impact", "{{va.Impact}}") %>
+            "Impact", "{{va.Impact}}") %> <%
+            view_variant_information("image/significance.png", "Significance",
+            "{{va.Clnsig}}") %>
           </div>
         </div>
       </q-tab-panel>
 
       <q-tab-panel name="t2">
-        <% view_input("text", "Symbol", "UBR3", :sy) %> <%
-        view_search_button(:ge) %> <% view_no_variant_found() %>
+        <% view_input("text", "Symbol", "UBR3", :ge) %> <%
+        view_search_button(:u2) %> <% view_no_variant_found() %>
 
-        <div v-show="re">
-          <% view_search_title("Gene {{sy}}") %> <% view_impact() %> <%
+        <div v-show="b5">
+          <% view_search_title("Gene {{ge}}") %> <% view_impact() %> <%
           view_variant_button() %>
         </div>
       </q-tab-panel>
@@ -107,10 +109,10 @@
         ></q-select>
 
         <% view_input("number", "Start", "", :st) %> <% view_input("number",
-        "End", "", :en) %> <% view_search_button(:rg) %> <%
+        "End", "", :en) %> <% view_search_button(:u3) %> <%
         view_no_variant_found() %>
 
-        <div v-show="re">
+        <div v-show="b5">
           <% view_search_title("Region {{ch}}:{{st}}-{{en}}") %> <%
           view_impact() %> <% view_variant_button() %>
         </div>

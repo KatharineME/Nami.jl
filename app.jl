@@ -2,16 +2,16 @@ using SQLite: DB
 
 using SQLite.DBInterface: close!
 
-@genietools
-
 using Nami
+
+@genietools
 
 #
 
 const UP = pkgdir(Nami, "public", "upload")
 
 # TODO: Hex
-const IP_HE = Dict(
+const CO_ = Dict(
     "Modifier" => "blue-grey",
     "Low" => "yellow",
     "Moderate" => "orange",
@@ -22,37 +22,35 @@ const IP_HE = Dict(
 
 @app begin
 
-    @in up = true
+    @in b1 = true #show uploader
 
-    @in sp = false
+    @in b2 = false #show spinner
 
-    @in se = false
+    @in b3 = false #show search
 
     @in na = ""
 
-    @in da = DB()
+    @in db = DB()
 
-    #
+    @event up begin
 
-    @event ul begin
+        b1 = false
 
-        up = false
-
-        sp = true
+        b2 = true
 
         na = fileuploads["name"]
 
-        close!(da)
+        close!(db)
 
-        da = DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
+        db = DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
 
     end
 
     @event fi begin
 
-        sp = false
+        b2 = false
 
-        se = true
+        b3 = true
 
     end
 
@@ -60,19 +58,19 @@ const IP_HE = Dict(
 
     @in ta = ""
 
-    @out em = false
+    @out b4 = false #if empty
 
-    @out re = false
+    @out b5 = false #result
 
     #
 
     @in va = Dict{Symbol, Union{Int, AbstractString}}()
 
-    @in rs = ""
+    @in r1 = ""
 
-    @out rd = ""
+    @out r2 = ""
 
-    @in vr = false
+    @in u1 = false
 
     #
 
@@ -80,9 +78,9 @@ const IP_HE = Dict(
 
     #
 
-    @in sy = ""
+    @in ge = ""
 
-    @in ge = false
+    @in u2 = false
 
     #
 
@@ -94,75 +92,71 @@ const IP_HE = Dict(
 
     @in en = 0
 
-    @in rg = false
+    @in u3 = false
 
     #
 
-    @out IP_HE = IP_HE
+    @out co_ = CO_
 
     @out im_ = (0, 0, 0, 0)
 
     #
 
-    @onchange rs, sy, ch, st, en begin
+    @onchange r1, ge, ch, st, en begin
 
-        @info "rs changed" rs
+        b4 = false
 
-        em = false
-
-        re = false
+        b5 = false
 
     end
 
     @onchange va begin
 
-        @info "va changed" va
-
         if isempty(va)
 
-            em = true
+            b4 = true
 
         else
 
-            rd = va[:ID]
+            r2 = va[:ID]
 
-            re = true
+            b5 = true
 
         end
 
     end
 
-    @onbutton vr begin
+    @onbutton u1 begin
 
-        va = Nami.get_variant_by_id(da, rs)
+        va = Nami.get_variant_by_id(db, r1)
 
     end
 
     @onchange va_ begin
 
-        im_ = Nami.count_impact(va_)
+        im_ = Nami.get_impact(va_)
 
         if im_ == (0, 0, 0, 0)
 
-            em = true
+            b4 = true
 
         else
 
-            re = true
+            b5 = true
 
         end
 
     end
 
-    @onbutton ge begin
+    @onbutton u2 begin
 
-        va_ = Nami.get_variant(da, sy)
+        va_ = Nami.get_variant(db, ge)
 
     end
 
-    @onbutton rg begin
+    @onbutton u3 begin
 
-        va_ = Nami.get_variant(da, ch, st, en)
+        va_ = Nami.get_variant(db, ch, st, en)
 
     end
 
@@ -194,7 +188,7 @@ function view_header()
                     class = "text-h6 text-right text-white q-ma-md",
                 );
                 class = "col-2",
-                @showif(:se)
+                @showif(:b3)
             ),
             quasar(
                 :btn;
@@ -204,8 +198,8 @@ function view_header()
                 label = "Change",
                 class = "col-1 justify-end q-ma-md",
                 style = "min-width: 80px;",
-                @showif(:se),
-                @click("up = true; se = false;")
+                @showif(:b3),
+                @click("b1 = true; b3 = false;")
             ),
         ];
         class = "row items-center bg-indigo",
@@ -251,7 +245,7 @@ end
 
 function view_no_variant_found()
 
-    xelem(:div, "No variants found"; class = "text-h4 text-black q-pa-xl", @showif(:em))
+    xelem(:div, "No variants found"; class = "text-h4 text-black q-pa-xl", @showif(:b4))
 
 end
 
@@ -309,7 +303,7 @@ function view_variant_information(fi, na, va)
         );
         flat = true,
         vertical = true,
-        class = "flex-center bg-grey-2 q-mt-md q-mb-md",
+        class = "flex-center bg-grey-2 q-mt-md q-mb-md q-pa-md",
     )
 
 end
@@ -339,10 +333,10 @@ function view_impact()
     xelem(
         :div,
         [
-            view_impact("im_[0]", "Modifier", IP_HE["Modifier"]),
-            view_impact("im_[1]", "Low", IP_HE["Low"]),
-            view_impact("im_[2]", "Moderate", IP_HE["Moderate"]),
-            view_impact("im_[3]", "High", IP_HE["High"]),
+            view_impact("im_[0]", "Modifier", CO_["Modifier"]),
+            view_impact("im_[1]", "Low", CO_["Low"]),
+            view_impact("im_[2]", "Moderate", CO_["Moderate"]),
+            view_impact("im_[3]", "High", CO_["High"]),
         ];
         class = "row flex-center q-pa-lg",
     )
@@ -361,7 +355,7 @@ function view_variant_button()
                     :btn;
                     unelevated = true,
                     size = "md",
-                    color! = "IP_HE[vi.Impact]",
+                    color! = "co_[vi.Impact]",
                     label! = "vi.ID",
                     class = "q-ma-sm",
                     @click("ta = 't1'; va = vi;")

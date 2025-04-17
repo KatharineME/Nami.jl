@@ -4,58 +4,58 @@ module Nami
 
 using CodecZlib: GzipDecompressorStream
 
-using SQLite: Stmt
+using SQLite: _close_db!, Stmt
 
 using SQLite.DBInterface: close!, execute
 
-function _get_effect_impact_gene(id, io)
+function get_clnsig(io)
 
-    # TODO: Find the allocation
+    id = findfirst("CLNSIG=", io)
+
+    isnothing(id) ? "Unknown" : split(@view(io[(id[end] + 1):end]), ';'; limit = 2)[1]
+
+end
+
+function get_effect_impact_gene_clnsig(id, io)
+
     if startswith(id, "Manta")
 
-        "Manta", "Manta", "Manta"
+        ("Manta" for i in 1:4)
 
     else
 
         #TODO: Return annotation for multi-allelic variants
         _, ef, ip, ge, _ = eachsplit(io, '|'; limit = 5)
 
-        titlecase(replace(ef, '_' => ' ')), titlecase(ip), ge
+        titlecase(replace(ef, '_' => ' ')), titlecase(ip), ge, get_clnsig(io)
 
     end
 
 end
 
-function _get_before_colon(st)
+function get_before_colon(st)
 
-    be, _ = eachsplit(st, ':'; limit = 2)
-
-    be
+    st[1:(findfirst(':', st) - 1)]
 
 end
 
-function _get_allele(gt, re, al)
+function get_allele(it, re, al)
 
-    id = parse(Int, gt)
-
-    # TODO: Do not split allocate
-    iszero(id) ? re : split(al, ','; limit = id + 1)[id]
+    iszero(it) ? re : split(al, ','; limit = it + 1)[it]
 
 end
 
-function _get_alleles(re, al, sa)
+function get_alleles(re, al, sa)
 
-    gt = _get_before_colon(sa)
+    it_ = map(st -> parse(Int, st), eachsplit(get_before_colon(sa), r"\||/"))
 
-    if isone(lastindex(gt))
+    if isone(lastindex(it_))
 
-        _get_allele(gt, re, al), ""
+        get_allele(it_[1], re, al), ""
 
     else
 
-        a1, a2 = (_get_allele(sp, re, al) for sp in eachsplit(gt, r"\||/"))
-
-        a1, a2
+        get_allele(it_[1], re, al), get_allele(it_[2], re, al)
 
     end
 
@@ -63,12 +63,12 @@ end
 
 const TA = "Variant"
 
-function make_variant_table!(da, vc)
+function make_variant_table!(sq, vc)
 
-    # TODO: Learn to speed up SQL
+    execute(sq, "PRAGMA journal_mode = WAL")
 
     execute(
-        da,
+        sq,
         """
         CREATE TABLE
         $TA 
@@ -80,15 +80,14 @@ function make_variant_table!(da, vc)
             Effect TEXT,
             Impact TEXT,
             Gene TEXT,
+            Clnsig TEXT,
             Allele1 TEXT,
-            Allele2 TEXT
-        )""",
+            Allele2 TEXT)""",
     )
 
-    # TODO: Read more efficiently
-    for li in eachline(GzipDecompressorStream(open(vc)))
+    @inbounds for li in eachline(GzipDecompressorStream(open(vc)))
 
-        if li[1] == '#'
+        if startswith(li, '#')
 
             continue
 
@@ -96,7 +95,7 @@ function make_variant_table!(da, vc)
 
         ch, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
 
-        if _get_before_colon(fo) != "GT"
+        if get_before_colon(fo) != "GT"
 
             continue
 
@@ -108,12 +107,12 @@ function make_variant_table!(da, vc)
 
         end
 
-        ef, ip, ge = _get_effect_impact_gene(id, io)
+        ef, ip, ge, cl = get_effect_impact_gene_clnsig(id, io)
 
-        a1, a2 = _get_alleles(re, al, sa)
+        a1, a2 = get_alleles(re, al, sa)
 
         execute(
-            da,
+            sq,
             """
             INSERT INTO
             $TA
@@ -126,36 +125,50 @@ function make_variant_table!(da, vc)
                 '$ef',
                 '$ip',
                 '$ge',
+                '$cl',
                 '$a1',
-                '$a2'
-            )""",
+                '$a2')""",
         )
 
     end
 
 end
 
-function _state_execute_close(da, st)
+function ge(sq, st)
 
-    sa = Stmt(da, st)
+    ta = Stmt(sq, st)
 
     va_ = map(
         ro -> Dict{Symbol, Union{Int, String}}(
-            zip((:CHROM, :POS, :ID, :REF, :Effect, :Impact, :Gene, :Allele1, :Allele2), ro),
+            zip(
+                (
+                    :CHROM,
+                    :POS,
+                    :ID,
+                    :REF,
+                    :Effect,
+                    :Impact,
+                    :Gene,
+                    :Clnsig,
+                    :Allele1,
+                    :Allele2,
+                ),
+                ro,
+            ),
         ),
-        execute(sa),
+        execute(ta),
     )
 
-    close!(sa)
+    close!(ta)
 
     va_
 
 end
 
-function get_variant_by_id(da, id)
+function get_variant_by_id(sq, id)
 
-    va_ = _state_execute_close(
-        da,
+    va_ = ge(
+        sq,
         """
         SELECT
         *
@@ -169,25 +182,25 @@ function get_variant_by_id(da, id)
 
 end
 
-function get_variant(da, ge)
+function get_variant(sq, en)
 
-    _state_execute_close(
-        da,
+    ge(
+        sq,
         """
         SELECT
         *
         FROM
         $TA
         WHERE
-        gene = '$ge'""",
+        gene = '$en'""",
     )
 
 end
 
-function get_variant(da, ch, st, en)
+function get_variant(sq, ch, st, en)
 
-    _state_execute_close(
-        da,
+    ge(
+        sq,
         """
         SELECT
         *
@@ -203,11 +216,11 @@ function get_variant(da, ch, st, en)
 
 end
 
-function count_impact(va_)
+function get_impact(va_)
 
-    mo = lo = md = hi = zero(Int)
+    mo = lo = od = hi = zero(Int)
 
-    for va in va_
+    @inbounds for va in va_
 
         ip = va[:Impact]
 
@@ -225,7 +238,7 @@ function count_impact(va_)
 
         elseif ip == "Moderate"
 
-            md += 1
+            od += 1
 
         elseif ip == "High"
 
@@ -235,7 +248,7 @@ function count_impact(va_)
 
     end
 
-    mo, lo, md, hi
+    mo, lo, od, hi
 
 end
 
