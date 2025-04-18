@@ -4,17 +4,13 @@ authors = ["KatharineME"]
 version = "0.1.0"
 
 [deps]
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
 GenieFramework = "a59fdf5c-6bf0-4f5d-949c-a137c9e2f353"
-Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-BenchmarkTools = "1.6.0"
 CodecZlib = "0.7.6"
 GenieFramework = "2.7.0"
-Revise = "3.7.3"
 SQLite = "1.6.1"
 Test = "1.11.0"

@@ -8,6 +8,28 @@ using SQLite: _close_db!, Stmt
 
 using SQLite.DBInterface: close!, execute
 
+function lo(vc)
+
+    for li in eachline(GzipDecompressorStream(open(vc)))
+
+        if startswith(li, '#')
+
+            continue
+
+        end
+
+        ch, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
+
+        if !startswith(id, r".|rs|Manta")
+
+            @warn ch, po, id
+
+        end
+
+    end
+
+end
+
 function get_clnsig(io)
 
     id = findfirst("CLNSIG=", io)
@@ -24,7 +46,6 @@ function get_effect_impact_gene_clnsig(id, io)
 
     else
 
-        #TODO: Return annotation for multi-allelic variants
         _, ef, ip, ge, _ = eachsplit(io, '|'; limit = 5)
 
         titlecase(replace(ef, '_' => ' ')), titlecase(ip), ge, get_clnsig(io)

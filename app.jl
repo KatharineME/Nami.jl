@@ -60,7 +60,7 @@ const CO_ = Dict(
 
     @out b4 = false #if empty
 
-    @out b5 = false #result
+    @out b5 = false #show result
 
     #
 
@@ -207,9 +207,9 @@ function view_header()
 
 end
 
-function view_tab(na, la)
+function view_tab(na, st)
 
-    quasar(:tab, xelem(:div, la; class = "text-h5 text-black"); name = na)
+    quasar(:tab, xelem(:div, st; class = "text-h5 text-black"); name = na)
 
 end
 
@@ -255,7 +255,7 @@ function view_search_title(st)
 
 end
 
-function view_allele(al, la)
+function view_allele(al, st)
 
     ai = "$al"
 
@@ -264,7 +264,7 @@ function view_allele(al, la)
         quasar(
             :card,
             [
-                xelem(:div, la; class = "text-h6 text-white q-pa-md"),
+                xelem(:div, st; class = "text-h6 text-white q-pa-md"),
                 xelem(
                     :div,
                     "{{$al}}";
@@ -282,21 +282,21 @@ function view_allele(al, la)
 
 end
 
-function view_variant_information(fi, na, va)
+function view_variant_information(im, s1, s2)
 
     quasar(
         :card,
         quasar(
             :card__section,
             [
-                xelem(:div, na; class = "text-h6 text-center text-charcoal"),
+                xelem(:div, s2; class = "text-h6 text-center text-charcoal"),
                 xelem(
                     :img;
-                    src = fi,
+                    src = im,
                     class = "q-ma-sm",
                     style = "height:40px; object-fit: contain;",
                 ),
-                xelem(:div, va; class = "text-h6 text-indigo q-pt-md"),
+                xelem(:div, s2; class = "text-h6 text-indigo q-pt-md"),
             ];
             vertical = true,
             class = "column flex-center",
