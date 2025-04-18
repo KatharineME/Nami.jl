@@ -1,6 +1,7 @@
 # 🌊
 
 ```julia
+
 using GenieFramework
 
 Genie.loadapp()
