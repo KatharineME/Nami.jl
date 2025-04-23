@@ -18,6 +18,22 @@
   background: #ebe6ff;
 }
 
+.bg-c-red {
+  background: #8c1515;
+}
+
+.bg-c-orange {
+  background: #fc7f31;
+}
+
+.bg-c-green {
+  background: #92ff93;
+}
+
+.bg-aspen2 {
+  background: #ffd96a;
+}
+
 body {
   color: #000 !important;
   font-family: Poppins, sans-serif !important;

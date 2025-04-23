@@ -18,7 +18,7 @@ function lo(vc)
 
         end
 
-        ch, po, id, re, al, _, _, io, fo, sa = eachsplit(li, '\t')
+        ch, po, id, _, = eachsplit(li, '\t'; limit = 4)
 
         if !startswith(id, r".|rs|Manta")
 
@@ -30,11 +30,31 @@ function lo(vc)
 
 end
 
+const CL = Dict(
+    "0" => "Benign",
+    "1" => "Likely benign",
+    "2" => "Likely benign",
+    "3" => "Uncertain Significance",
+    "4" => "Likely Pathogenic",
+    "5" => "Pathogenic",
+    "6" => "Drug Response",
+    "7" => "Confers Sensitivity",
+    "255" => "Other",
+)
+
 function get_clnsig(io)
 
     id = findfirst("CLNSIG=", io)
 
-    isnothing(id) ? "Unknown" : split(@view(io[(id[end] + 1):end]), ';'; limit = 2)[1]
+    cl = isnothing(id) ? "Unknown" : split(@view(io[(last(id) + 1):end]), ';'; limit = 2)[1]
+
+    if occursin(r"\d", cl)
+
+        cl = CL[split(cl, r"[,\|]"; limit = 2)[1]]
+
+    end
+
+    cl
 
 end
 
@@ -203,7 +223,7 @@ function get_variant_by_id(sq, id)
 
 end
 
-function get_variant(sq, en)
+function get_variant(sq, sy)
 
     ge(
         sq,
@@ -213,7 +233,7 @@ function get_variant(sq, en)
         FROM
         $TA
         WHERE
-        gene = '$en'""",
+        gene = '$sy'""",
     )
 
 end

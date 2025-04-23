@@ -12,10 +12,10 @@ const UP = pkgdir(Nami, "public", "upload")
 
 # TODO: Hex
 const CO_ = Dict(
-    "Modifier" => "blue-grey",
-    "Low" => "yellow",
-    "Moderate" => "orange",
-    "High" => "red",
+    "Modifier" => "bg-c-green",
+    "Low" => "bg-aspen2",
+    "Moderate" => "bg-c-orange",
+    "High" => "bg-c-red",
 )
 
 #
@@ -32,7 +32,7 @@ const CO_ = Dict(
 
     @in db = DB()
 
-    @event up begin
+    @event :up begin
 
         b1 = false
 
@@ -46,7 +46,7 @@ const CO_ = Dict(
 
     end
 
-    @event fi begin
+    @event :fi begin
 
         b2 = false
 
@@ -282,14 +282,14 @@ function view_allele(al, st)
 
 end
 
-function view_variant_information(im, s1, s2)
+function view_variant_information(s1, im, s2)
 
     quasar(
         :card,
         quasar(
             :card__section,
             [
-                xelem(:div, s2; class = "text-h6 text-center text-charcoal"),
+                xelem(:div, s1; class = "text-h6 text-center text-charcoal"),
                 xelem(
                     :img;
                     src = im,

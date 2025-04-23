@@ -37,7 +37,7 @@
       size="lg"
       color="indigo"
       label="Contact Us"
-      href="mailto:ka@biocausality.com"
+      href="mailto:ka@caucell.com"
       class="q-ma-lg"
     ></q-btn>
   </div>
@@ -74,14 +74,14 @@
           </div>
 
           <div class="row q-gutter-sm justify-evenly">
-            <% view_variant_information("image/chromosome.png", "Chromosome",
-            "{{va.CHROM}}") %> <% view_variant_information("image/position.png",
-            "Position", "{{va.POS}}") %> <%
-            view_variant_information("image/gene.png", "Gene", "{{va.Gene}}") %>
-            <% view_variant_information("image/effect.png", "Effect",
-            "{{va.Effect}}") %> <% view_variant_information("image/impact.png",
-            "Impact", "{{va.Impact}}") %> <%
-            view_variant_information("image/significance.png", "Significance",
+            <% view_variant_information("Chromosome", "image/chromosome.png",
+            "{{va.CHROM}}") %> <% view_variant_information("Position",
+            "image/position.png", "{{va.POS}}") %> <%
+            view_variant_information("Gene", "image/gene.png", "{{va.Gene}}") %>
+            <% view_variant_information("Effect", "image/effect.png",
+            "{{va.Effect}}") %> <% view_variant_information("Impact",
+            "image/impact.png", "{{va.Impact}}") %> <%
+            view_variant_information("Significance", "image/significance.png",
             "{{va.Clnsig}}") %>
           </div>
         </div>
