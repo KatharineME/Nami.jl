@@ -77,6 +77,8 @@ const CO_ = Dict(
 
     @out im_ = (0, 0, 0, 0)
 
+    #
+
     @onchange r1, ge, ch, st, en begin
 
         b4 = false
@@ -102,8 +104,6 @@ const CO_ = Dict(
     end
 
     @onbutton u1 begin
-
-        println("on button u1")
 
         va = Nami.get_variant_by_id(db, r1)
 
@@ -143,8 +143,6 @@ end
 
 @event :up begin
 
-    println("uploaded")
-
     b1 = false
 
     b2 = true
@@ -164,6 +162,7 @@ end
     b3 = true
 
 end
+
 
 #
 
@@ -262,8 +261,6 @@ function view_search_title(st)
 end
 
 function view_allele(al, st)
-
-    ai = "$al"
 
     xelem(
         :div,
