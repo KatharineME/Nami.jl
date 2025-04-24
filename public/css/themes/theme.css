@@ -1,37 +1,57 @@
-.text-charcoal {
+.text-dark {
   color: #27221f;
 }
 
-.text-indigo {
-  color: #4e40d8;
+.bg-nucleus-hu {
+  background: #fbb92d;
 }
 
-.bg-indigo {
-  background: #4e40d8;
+.text-nucleus-in {
+  color: #4e40d8 !important;
 }
 
-.text-indigo-light {
-  color: #ebe6ff;
+.bg-nucleus-in {
+  background: #4e40d8 !important;
 }
 
-.bg-indigo-light {
-  background: #ebe6ff;
+.text-nucleus-in-light {
+  color: #4e40d840 !important;
 }
 
-.bg-c-red {
-  background: #8c1515;
+.bg-nucleus-in-light {
+  color: #4e40d840 !important;
 }
 
-.bg-c-orange {
-  background: #fc7f31;
+.bg-nucleus-vi {
+  background: #9017e6 !important;
 }
 
-.bg-c-green {
-  background: #92ff93;
+.bg-nucleus-tu {
+  background: #20d9ba !important;
 }
 
-.bg-aspen2 {
-  background: #ffd96a;
+.bg-nucleus-re {
+  background: #ff1993 !important;
+}
+
+.bg-nucleus-bl {
+  background: #1992ff !important;
+}
+
+.bg-nucleus-a1 {
+  background: #00936e !important;
+}
+
+.bg-nucleus-s1 {
+  background: #8c1515 !important;
+}
+
+.bg-nucleus-or {
+  background: #fc7f31 !important;
+}
+
+.bg-bluegrey {
+  background: #607d8b !important;
 }
 
 body {
@@ -39,4 +59,8 @@ body {
   font-family: Poppins, sans-serif !important;
   font-size: 16px !important;
   font-weight: 400 !important;
+}
+
+.btn {
+  text-transform: none !important;
 }

@@ -10,12 +10,11 @@ using Nami
 
 const UP = pkgdir(Nami, "public", "upload")
 
-# TODO: Hex
 const CO_ = Dict(
-    "Modifier" => "bg-c-green",
-    "Low" => "bg-aspen2",
-    "Moderate" => "bg-c-orange",
-    "High" => "bg-c-red",
+    "Modifier" => "bluegrey",
+    "Low" => "nucleus-hu",
+    "Moderate" => "nucleus-or",
+    "High" => "nucleus-s1",
 )
 
 #
@@ -31,28 +30,6 @@ const CO_ = Dict(
     @in na = ""
 
     @in db = DB()
-
-    @event :up begin
-
-        b1 = false
-
-        b2 = true
-
-        na = fileuploads["name"]
-
-        close!(db)
-
-        db = DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
-
-    end
-
-    @event :fi begin
-
-        b2 = false
-
-        b3 = true
-
-    end
 
     #
 
@@ -100,8 +77,6 @@ const CO_ = Dict(
 
     @out im_ = (0, 0, 0, 0)
 
-    #
-
     @onchange r1, ge, ch, st, en begin
 
         b4 = false
@@ -128,6 +103,8 @@ const CO_ = Dict(
 
     @onbutton u1 begin
 
+        println("on button u1")
+
         va = Nami.get_variant_by_id(db, r1)
 
     end
@@ -150,7 +127,7 @@ const CO_ = Dict(
 
     @onbutton u2 begin
 
-        va_ = Nami.get_variant(db, ge)
+        va_ = Nami.get_variant(db, uppercase(ge))
 
     end
 
@@ -164,15 +141,44 @@ end
 
 #
 
+@event :up begin
+
+    println("uploaded")
+
+    b1 = false
+
+    b2 = true
+
+    na = fileuploads["name"]
+
+    close!(db)
+
+    db = DB(mv(fileuploads["path"], joinpath(UP, na); force = true))
+
+end
+
+@event :fi begin
+
+    b2 = false
+
+    b3 = true
+
+end
+
+#
+
 function view_header()
 
     quasar(
         :header,
         [
-            xelem(
-                :div,
-                "Window to your genome";
+            quasar(
+                :btn;
+                unelevated = true,
+                size = "lg",
+                icon = "home",
                 class = "col-4 text-h6 text-center text-white",
+                @click("b1 = false; b3 = true;")
             ),
             xelem(
                 :div,
@@ -196,13 +202,13 @@ function view_header()
                 size = "md",
                 color = "white",
                 label = "Change",
-                class = "col-1 justify-end q-ma-md",
+                class = "col-1 justify-end q-ma-md btn",
                 style = "min-width: 80px;",
                 @showif(:b3),
                 @click("b1 = true; b3 = false;")
             ),
         ];
-        class = "row items-center bg-indigo",
+        class = "row items-center bg-nucleus-in",
     )
 
 end
@@ -235,9 +241,9 @@ function view_search_button(bu)
         :btn;
         unelevated = true,
         size = "lg",
-        color = "indigo",
+        color = "nucleus-in",
         label = "Search",
-        class = "q-ma-lg",
+        class = "q-ma-lg btn",
         @click("$bu = true")
     )
 
@@ -275,7 +281,7 @@ function view_allele(al, st)
             flat = true,
             bordered = true,
             class = Symbol(
-                "($al == 'A' ? 'bg-blue' : $al == 'T' ? 'bg-cyan' : $al == 'G' ? 'bg-teal' : $al == 'C' ? 'bg-green' : 'bg-pink') + ' column flex-center q-ma-lg'",
+                "($al == 'A' ? 'bg-nucleus-tu' : $al == 'T' ? 'bg-nucleus-a1' : $al == 'G' ? 'bg-nucleus-re' : $al == 'C' ? 'bg-nucleus-vi' : 'bg-nucleus-bl') + ' column flex-center q-ma-lg'",
             ),
         );
     )
@@ -289,14 +295,14 @@ function view_variant_information(s1, im, s2)
         quasar(
             :card__section,
             [
-                xelem(:div, s1; class = "text-h6 text-center text-charcoal"),
+                xelem(:div, s1; class = "text-h6 text-center text-dark"),
                 xelem(
                     :img;
                     src = im,
                     class = "q-ma-sm",
                     style = "height:40px; object-fit: contain;",
                 ),
-                xelem(:div, s2; class = "text-h6 text-indigo q-pt-md"),
+                xelem(:div, s2; class = "text-h6 text-nucleus-in q-pt-md"),
             ];
             vertical = true,
             class = "column flex-center",

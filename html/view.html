@@ -10,7 +10,7 @@
   <div v-show="b2" class="text-h4 q-mt-xl text-center text-black">Loading</div>
 
   <div v-show="b2" class="q-ma-lg text-center">
-    <q-spinner-grid color="indigo" size="4em" />
+    <q-spinner-grid color="nucleus-in" size="4em" />
   </div>
 
   <div v-show="b1" class="q-ma-lg">
@@ -34,11 +34,12 @@
       Don't have one?
     </div>
     <q-btn
+      unelevated
       size="lg"
-      color="indigo"
+      color="nucleus-in"
       label="Contact Us"
       href="mailto:ka@caucell.com"
-      class="q-ma-lg"
+      class="q-ma-lg btn"
     ></q-btn>
   </div>
 
@@ -46,8 +47,8 @@
     <q-tabs
       no-caps
       align="justify"
-      active-bg-color="indigo-light"
-      indicator-color="indigo-light"
+      active-bg-color="nucleus-in-light"
+      indicator-color="nucleus-in-light"
       class="col-12 q-mt-xl"
       style="max-width: 912px"
       v-model="ta"

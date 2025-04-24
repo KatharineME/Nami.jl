@@ -68,7 +68,7 @@ function get_effect_impact_gene_clnsig(id, io)
 
         _, ef, ip, ge, _ = eachsplit(io, '|'; limit = 5)
 
-        titlecase(replace(ef, '_' => ' ')), titlecase(ip), ge, get_clnsig(io)
+        titlecase(replace(ef, r"[_&]" => ' ')), titlecase(ip), ge, get_clnsig(io)
 
     end
 
@@ -115,7 +115,7 @@ function make_variant_table!(sq, vc)
         $TA 
         (
             CHROM TEXT,
-            POS INTEGER,
+           POS INTEGER,
             ID TEXT,
             REF TEXT,
             Effect TEXT,
