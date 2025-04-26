@@ -10,12 +10,7 @@ using Nami
 
 const UP = pkgdir(Nami, "public", "upload")
 
-const CO_ = Dict(
-    "Modifier" => "bluegrey",
-    "Low" => "nucleus-hu",
-    "Moderate" => "nucleus-or",
-    "High" => "nucleus-s1",
-)
+const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" => "re")
 
 #
 
@@ -183,7 +178,7 @@ function view_header()
                 :div,
                 "Nami";
                 class = "col-4 text-center text-white q-mt-lg q-mb-sm",
-                style = "font-size: 240%; font-family: fantasy",
+                style = "font-size: 200%; font-family: fantasy",
             ),
             xelem(
                 :div,
@@ -207,7 +202,7 @@ function view_header()
                 @click("b1 = true; b3 = false;")
             ),
         ];
-        class = "row items-center bg-nucleus-in",
+        class = "row items-center bg-in",
     )
 
 end
@@ -240,7 +235,7 @@ function view_search_button(bu)
         :btn;
         unelevated = true,
         size = "lg",
-        color = "nucleus-in",
+        color = "in",
         label = "Search",
         class = "q-ma-lg btn",
         @click("$bu = true")
@@ -278,7 +273,7 @@ function view_allele(al, st)
             flat = true,
             bordered = true,
             class = Symbol(
-                "($al == 'A' ? 'bg-nucleus-tu' : $al == 'T' ? 'bg-nucleus-a1' : $al == 'G' ? 'bg-nucleus-re' : $al == 'C' ? 'bg-nucleus-vi' : 'bg-nucleus-bl') + ' column flex-center q-ma-lg'",
+                "($al == 'A' ? 'bg-g1' : $al == 'T' ? 'bg-g2' : $al == 'G' ? 'bg-b1' : $al == 'C' ? 'bg-b2' : 'bg-pi') + ' column flex-center q-ma-lg'",
             ),
         );
     )
@@ -299,7 +294,7 @@ function view_variant_information(s1, im, s2)
                     class = "q-ma-sm",
                     style = "height:40px; object-fit: contain;",
                 ),
-                xelem(:div, s2; class = "text-h6 text-nucleus-in q-pt-md"),
+                xelem(:div, s2; class = "text-h6 text-in q-pt-md"),
             ];
             vertical = true,
             class = "column flex-center",
