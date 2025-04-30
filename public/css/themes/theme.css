@@ -7,19 +7,19 @@
 }
 
 .text-in {
-  color: #4e40d8;
+  color: #4e40d8 !important;
 }
 
 .bg-in {
-  background: #4e40d8;
+  background: #4e40d8 !important;
 }
 
 .text-li {
-  color: #4e40d840;
+  color: #4e40d840 !important;
 }
 
 .bg-li {
-  color: #4e40d840;
+  color: #4e40d840 !important;
 }
 
 .bg-pi {

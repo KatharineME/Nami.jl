@@ -10,19 +10,15 @@ using SQLite.DBInterface: close!, execute
 
 function lo(vc)
 
+    re = r"(?:\.|rs|Manta)"
+
     for li in eachline(GzipDecompressorStream(open(vc)))
 
-        if startswith(li, '#')
+        if !startswith(li, '#')
 
-            continue
+            ch, po, id, _, = eachsplit(li, '\t'; limit = 4)
 
-        end
-
-        ch, po, id, _, = eachsplit(li, '\t'; limit = 4)
-
-        if !startswith(id, r".|rs|Manta")
-
-            @warn ch, po, id
+            startswith(id, re) ? continue : @warn ch, po, id
 
         end
 
@@ -48,17 +44,11 @@ function get_clnsig(io)
 
     cl = isnothing(id) ? "Unknown" : split(@view(io[(last(id) + 1):end]), ';'; limit = 2)[1]
 
-    if occursin(r"\d", cl)
-
-        cl = CL[split(cl, r"[,\|]"; limit = 2)[1]]
-
-    end
-
-    cl
+    cl = occursin(r"\d", cl) ? CL[split(cl, r"[,\|]"; limit = 2)[1]] : cl
 
 end
 
-function get_effect_impact_gene_clnsig(id, io)
+function get_annotation(id, io)
 
     if startswith(id, "Manta")
 
@@ -102,7 +92,7 @@ function get_alleles(re, al, sa)
 
 end
 
-const TA = "Variant"
+const ST = "Variant"
 
 function make_variant_table!(sq, vc)
 
@@ -112,7 +102,7 @@ function make_variant_table!(sq, vc)
         sq,
         """
         CREATE TABLE
-        $TA 
+        $ST 
         (
             CHROM TEXT,
            POS INTEGER,
@@ -126,7 +116,7 @@ function make_variant_table!(sq, vc)
             Allele2 TEXT)""",
     )
 
-    @inbounds for li in eachline(GzipDecompressorStream(open(vc)))
+    for li in eachline(GzipDecompressorStream(open(vc)))
 
         if startswith(li, '#')
 
@@ -148,7 +138,7 @@ function make_variant_table!(sq, vc)
 
         end
 
-        ef, ip, ge, cl = get_effect_impact_gene_clnsig(id, io)
+        ef, ip, ge, cl = get_annotation(id, io)
 
         a1, a2 = get_alleles(re, al, sa)
 
@@ -156,7 +146,7 @@ function make_variant_table!(sq, vc)
             sq,
             """
             INSERT INTO
-            $TA
+            $ST
             VALUES
             (
                 '$ch',
@@ -214,7 +204,7 @@ function get_variant_by_id(sq, id)
         SELECT
         *
         FROM
-        $TA
+        $ST
         WHERE
         id = '$id'""",
     )
@@ -231,7 +221,7 @@ function get_variant(sq, sy)
         SELECT
         *
         FROM
-        $TA
+        $ST
         WHERE
         gene = '$sy'""",
     )
@@ -246,7 +236,7 @@ function get_variant(sq, ch, st, en)
         SELECT
         *
         FROM
-        $TA
+        $ST
         WHERE
         chrom = '$ch'
         AND
@@ -261,7 +251,7 @@ function get_impact(va_)
 
     mo = lo = od = hi = zero(Int)
 
-    @inbounds for va in va_
+    for va in va_
 
         ip = va[:Impact]
 

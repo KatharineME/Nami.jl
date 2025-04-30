@@ -14,11 +14,11 @@ const VC = joinpath(DA, "thin.10K.vcf.gz")
 
 # ---- #
 
-# 1.021 s (2388063 allocations: 642.59 MiB)
+# 1.033 s (2388265 allocations: 642.61 MiB)
 
 for vc in (VC,)
 
-    @test Nami.lo(vc) == nothing
+    @test Nami.lo(vc) === nothing
 
     #@btime Nami.lo($vc)
 
@@ -26,15 +26,30 @@ end
 
 # ---- #
 
-# 7.667 ns (0 allocations: 0 bytes)
-# 1.675 μs (22 allocations: 1.10 KiB)
-# 1.054 μs (25 allocations: 1.41 KiB)
-
-const MA = "Manta"
-
 const I1 = "SNVHPOL=3;MQ=60;ANN=C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000264784.8|protein_coding|2/11|c.250-40A>G||||||,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000309065.7|protein_coding|3/12|c.163-40A>G||||||,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000505104.5|processed_transcript|3/11|n.284-40A>G||||||,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000505506.1|processed_transcript|1/2|n.102-40A>G||||||,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000513129.1|protein_coding|3/5|c.163-40A>G||||||WARNING_TRANSCRIPT_NO_STOP_CODON,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000506839.1|processed_transcript|1/1|n.321-11188A>G||||||,C|intron_variant|MODIFIER|SLC2A9|ENSG00000109667|transcript|ENST00000506583.5|protein_coding|4/13|c.163-40A>G||||||;AA=C;E_1000G;E_Cited;E_ESP;E_ExAC;E_Freq;E_TOPMed;E_gnomAD;MA=T;MAC=898;MAF=0.1793;TSA=SNV;dbSNP_154;ALLELEID=1237953;CLNDISDB=MedGen:CN517202;CLNDN=not_provided;CLNHGVS=NC_000004.12:g.9996981T>C;CLNREVSTAT=criteria_provided,_single_submitter;CLNSIG=Benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;GENEINFO=SLC2A9:56606|SLC2A9-AS1:105374476;MC=SO:0001627|intron_variant;ORIGIN=1"
 
 const I2 = "SNVHPOL=3;MQ=60;ANN=C|missense_variant|MODERATE|SOX|ENSG00000109667|transcript|ENST00000264784.8|protein_coding|CLNREVSTAT=criteria_provided,_single_submitter;CLNSIG=5;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;GENEINFO=SLC2A9:56606|SLC2A9-AS1:105374476;MC=SO:0001627|intron_variant;ORIGIN=1"
+
+# ---- #
+
+# 714.886 ns (5 allocations: 416 bytes)
+# 288.471 ns (8 allocations: 736 bytes)
+
+for (io, re) in ((I1, "Benign"), (I2, "Pathogenic"))
+
+    @test Nami.get_clnsig(io) == re
+
+    #@btime Nami.get_clnsig($io)
+
+end
+
+# ---- #
+
+# 7.667 ns (0 allocations: 0 bytes)
+# 1.708 μs (22 allocations: 1.10 KiB)
+# 1.075 μs (25 allocations: 1.41 KiB)
+
+const MA = "Manta"
 
 for (id, io, re_) in (
     ("Manta1234", I1, [MA, MA, MA, MA]),
@@ -42,9 +57,9 @@ for (id, io, re_) in (
     ("rs1234", I2, ["Missense Variant", "Moderate", "SOX", "Pathogenic"]),
 )
 
-    @test collect(Nami.get_effect_impact_gene_clnsig(id, io)) == re_
+    @test collect(Nami.get_annotation(id, io)) == re_
 
-    #@btime Nami.get_effect_impact_gene_clnsig($id, $io)
+    #@btime Nami.get_annotation($id, $io)
 
 end
 
@@ -99,12 +114,12 @@ const SQ = DB(joinpath(DA, "thin.db"))
 # 4.991697 seconds (17.21 M allocations: 1.345 GiB, 2.69% gc time, 3.03% compilation time)
 # 90.218603 seconds (328.98 M allocations: 25.167 GiB, 2.40% gc time)
 
-for (sq, ba, re) in
+for (sq, vc, re) in
     ((SQ, VC, 17900000), (DB(joinpath(DA, "735.db")), "735.vcf.gz", 353300000))
 
-    drop!(sq, Nami.TA; ifexists = true)
+    drop!(sq, Nami.ST; ifexists = true)
 
-    @time Nami.make_variant_table!(sq, joinpath(DA, ba))
+    @time Nami.make_variant_table!(sq, joinpath(DA, vc))
 
     @test filesize(sq.file) > re
 
@@ -116,7 +131,7 @@ end
 
 for (id, re) in (("rs625655", 20075434),)
 
-    st = """SELECT * FROM $(Nami.TA) WHERE id = '$id'"""
+    st = """SELECT * FROM $(Nami.ST) WHERE id = '$id'"""
 
     @test Nami.ge(SQ, st)[][:POS] === re
 

@@ -14,6 +14,24 @@ const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" =
 
 #
 
+function update!(di, se = 1800)
+
+    while true
+
+        println("upload: $(readdir(di; join=true))")
+
+        rm.(readdir(di; join = true), recursive = true)
+
+        sleep(se)
+
+    end
+
+end
+
+@async update!(UP, 10)
+
+#
+
 @app begin
 
     @in b1 = true #show uploader
@@ -224,7 +242,7 @@ function view_input(ty, la, hi, bi)
         clearable = true,
         bg__color = "grey-2",
         class = "q-pa-sm",
-        @bind(bi)
+        @bind(bi),
     )
 
 end
