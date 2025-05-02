@@ -14,25 +14,7 @@ const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" =
 
 #
 
-function update!(di, se = 1800)
-
-    while true
-
-        println("upload: $(readdir(di; join=true))")
-
-        rm.(readdir(di; join = true), recursive = true)
-
-        sleep(se)
-
-    end
-
-end
-
-@async update!(UP, 10)
-
-#
-
-@app begin
+@app Na begin
 
     @in b1 = true #show uploader
 
@@ -89,6 +71,8 @@ end
     @out co_ = CO_
 
     @out im_ = (0, 0, 0, 0)
+
+    @out te = false
 
     #
 
@@ -382,6 +366,22 @@ function view_variant_button()
     )
 
 end
+
+function update!(se)
+
+    while true
+
+        rm.(readdir(UP; join = true), recursive = true)
+
+        sleep(se)
+
+        #change @out variable defined in @app here
+
+    end
+
+end
+
+@async update!(10)
 
 #
 

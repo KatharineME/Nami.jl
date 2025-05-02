@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <meta name="author" content="Biocausality" />
+    <meta name="author" content="Caucell" />
 
     <title>Nami</title>
 
@@ -10,7 +10,7 @@
 
     <meta
       name="keywords"
-      content="Nami, Genome, Genome Explorer, Search Genome, Bioinformatics, My Trillions, Biocausality"
+      content="Nami, Genome, Genome Explorer, Search Genome, Bioinformatics, My Trillions"
     />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -37,8 +37,9 @@
     <div class="container">
       <div class="row">
         <div class="col-12">
-          <% Stipple.page(model, partial = true, v__cloak = true,
-          [Stipple.Genie.Renderer.Html.@yield], Stipple.@if(:isready)) %>
+          <% Stipple.sesstoken() %> <% Stipple.page(model, partial = true,
+          v__cloak = true, [Stipple.Genie.Renderer.Html.@yield],
+          Stipple.@if(:isready)) %>
         </div>
       </div>
     </div>
