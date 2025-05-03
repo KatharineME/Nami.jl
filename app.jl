@@ -13,8 +13,9 @@ const UP = pkgdir(Nami, "public", "upload")
 const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" => "re")
 
 #
+#
 
-@app Na begin
+@app begin
 
     @in b1 = true #show uploader
 
@@ -72,8 +73,6 @@ const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" =
 
     @out im_ = (0, 0, 0, 0)
 
-    @out te = false
-
     #
 
     @onchange r1, ge, ch, st, en begin
@@ -124,7 +123,9 @@ const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" =
 
     @onbutton u2 begin
 
-        va_ = Nami.get_variant(db, uppercase(ge))
+        ge = uppercase(ge)
+
+        va_ = Nami.get_variant(db, ge)
 
     end
 
@@ -308,12 +309,12 @@ function view_variant_information(s1, im, s2)
 
 end
 
-function view_impact(nu, na, co)
+function view_impact(nu, st, co)
 
     quasar(
         :card,
         [
-            xelem(:div, "$na"; class = "text-h6 text-white q-pa-md"),
+            xelem(:div, st; class = "text-h6 text-white q-pa-md"),
             xelem(
                 :div,
                 "{{$nu}}";
@@ -375,13 +376,11 @@ function update!(se)
 
         sleep(se)
 
-        #change @out variable defined in @app here
-
     end
 
 end
 
-@async update!(10)
+#@async update!(10)
 
 #
 
