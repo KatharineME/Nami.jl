@@ -43,22 +43,6 @@
     ></q-btn>
   </div>
 
-  <div class="row flex-center">
-    <q-tabs
-      no-caps
-      align="justify"
-      active-bg-color="li"
-      indicator-color="li"
-      class="col-12 q-mt-xl"
-      style="max-width: 912px"
-      v-model="ta"
-      v-show="b3"
-    >
-      <% view_tab("t1", "Variant") %> <% view_tab("t2", "Gene") %> <%
-      view_tab("t3", "Region") %>
-    </q-tabs>
-  </div>
-
   <div v-show="b3" class="row flex-center text-center">
     <q-tab-panels v-model="ta" class="col-12" animated style="max-width: 960px">
       <q-tab-panel name="t1">

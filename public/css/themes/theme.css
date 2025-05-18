@@ -15,11 +15,11 @@
 }
 
 .text-li {
-  color: #4e40d840 !important;
+  color: #7c4dff !important;
 }
 
 .bg-li {
-  color: #4e40d840 !important;
+  color: #7c4dff !important;
 }
 
 .bg-pi {
@@ -68,3 +68,8 @@ body {
 .btn {
   text-transform: none !important;
 }
+
+.stipple-core header {
+  padding: 0px !important;
+}
+

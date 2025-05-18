@@ -161,58 +161,73 @@ end
 
 end
 
-
 #
+
+function view_tab(na, st)
+
+    quasar(:tab, xelem(:div, st; class = "text-h5 text-bold text-white"); name = na)
+
+end
 
 function view_header()
 
     quasar(
         :header,
         [
+            xelem(
+                :div,
+                quasar(
+                    :btn;
+                    unelevated = true,
+                    size = "lg",
+                    icon = "home",
+                    class = "text-h6 text-center text-white",
+                    style = "min-width:200px; width:fit-content;",
+                    @click("b1 = false; b3 = true;")
+                );
+                class = "col-3 flex flex-center",
+            ),
             quasar(
-                :btn;
-                unelevated = true,
-                size = "lg",
-                icon = "home",
-                class = "col-4 text-h6 text-center text-white",
-                @click("b1 = false; b3 = true;")
+                :tabs,
+                [
+                    view_tab("t1", "Variant"),
+                    view_tab("t2", "Gene"),
+                    view_tab("t3", "Region"),
+                ];
+                no__caps = true,
+                active__bg__color = "deep-purple-12",
+                indicator__color = "li",
+                align = "justify",
+                class = "col-6",
+                style = "min-height:80px;",
+                @bind(:ta),
+                @showif(:b3),
             ),
             xelem(
                 :div,
                 "Nami";
-                class = "col-4 text-center text-white q-mt-lg q-mb-sm",
+                class = "col-6 text-center text-white q-mt-lg q-mb-sm",
                 style = "font-size: 200%; font-family: fantasy",
+                @showif(:b1),
             ),
             xelem(
                 :div,
-                xelem(
-                    :div,
-                    "Searching {{na}}";
-                    class = "text-h6 text-right text-white q-ma-md",
+                quasar(
+                    :btn;
+                    outline = true,
+                    size = "md",
+                    icon = "close",
+                    label! = "na",
+                    class = "btn",
+                    style = "min-width: 100px; max-width: 300px; width: fit-content;",
+                    @showif(:b3),
+                    @click("b1 = true; b3 = false;")
                 );
-                class = "col-2",
-                @showif(:b3)
-            ),
-            quasar(
-                :btn;
-                outline = true,
-                size = "md",
-                color = "white",
-                label = "Change",
-                class = "col-1 justify-end q-ma-md btn",
-                style = "min-width: 80px;",
-                @showif(:b3),
-                @click("b1 = true; b3 = false;")
+                class = "col-3 flex flex-center",
             ),
         ];
         class = "row items-center bg-in",
     )
-
-end
-
-function view_tab(na, st)
-
-    quasar(:tab, xelem(:div, st; class = "text-h5 text-black"); name = na)
 
 end
 
