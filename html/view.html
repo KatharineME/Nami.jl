@@ -3,7 +3,7 @@
 
   <space class="q-pa-xl"></space>
 
-  <div v-show="b1" class="text-h4 q-pa-lg q-mt-xl text-center text-black">
+  <div v-show="b1" class="text-h4 q-pa-lg q-mt-md text-center text-black">
     Upload your variant database file
   </div>
 
@@ -87,10 +87,10 @@
           outlined
           clearable
           :options="ch_"
-          label="Chromosome"
           bg-color="grey-2"
-          class="q-pa-sm"
           v-model="ch"
+          label="Chromosome"
+          class="q-pa-sm"
         ></q-select>
 
         <% view_input("number", "Start", "", :st) %> <% view_input("number",

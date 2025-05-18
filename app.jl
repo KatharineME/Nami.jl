@@ -181,7 +181,7 @@ function view_header()
                     unelevated = true,
                     size = "lg",
                     icon = "home",
-                    class = "text-h6 text-center text-white",
+                    class = "text-h6 text-white text-center",
                     style = "min-width:200px; width:fit-content;",
                     @click("b1 = false; b3 = true;")
                 );
@@ -395,7 +395,7 @@ function update!(se)
 
 end
 
-#@async update!(10)
+@async update!(10)
 
 #
 
