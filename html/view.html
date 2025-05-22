@@ -21,9 +21,9 @@
       color="grey-2"
       text-color="black"
       accept=".db"
-      max-files="1"
       v-on:uploaded="function(event) { handle_event(event, 'up') }"
       v-on:finish="function(event) { handle_event(event, 'fi') }"
+      v-on:rejected="function(event) { handle_event(event, 're') }"
       :url="'/____/upload/' + channel_"
       style="max-width: 800px; min-width: 400px; margin: 0 auto"
     ></q-uploader>
