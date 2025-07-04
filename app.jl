@@ -404,56 +404,6 @@ function update!(se)
 
 end
 
-@async update!(30)
-
-#
-
-using Genie.Requests
-
-using FileTypes
-
-route("/____/upload/:channel"; method = POST) do
-
-    fi_ = filespayload()
-
-    println(typeof(fi_))
-
-    ke_ = keys(fi_)
-
-    println(ke_)
-
-    println(typeof(ke_))
-
-    println("above params")
-
-    #ch = params(:channel)
-
-    for fi in fi_
-
-        println("data: $(typeof(fi["picture.db"]))")
-
-        te = tempname()
-
-        println("tempname: $te")
-
-        if string(matcher(fi["picture.db"].mime)) == "application/vnd.sqlite3"
-
-            println("matches")
-
-            #write(joinpath("uploads", fi.name), read(fi.data))
-
-            return json(Dict("files" => [fi.name]); status = 200)
-
-        else
-
-            println("else")
-
-            return json(Dict("files" => []); status = 400)
-
-        end
-
-    end
-
-end
+#@async update!(30)
 
 @page "/" path"html/view.html" layout = path"html/layout.html"
