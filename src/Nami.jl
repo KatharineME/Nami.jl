@@ -1,6 +1,10 @@
 module Nami
 
-# ----------------------------------------------------------------------------------------------- #
+const P1 = pkgdir(Nami, "in")
+
+const P2 = pkgdir(Nami, "ou")
+
+# ------------------------------------ #
 
 using CodecZlib: GzipDecompressorStream
 
@@ -42,7 +46,9 @@ function get_clnsig(io)
 
     id = findfirst("CLNSIG=", io)
 
-    cl = isnothing(id) ? "Unknown" : split(@view(io[(last(id) + 1):end]), ';'; limit = 2)[1]
+    cl =
+        isnothing(id) ? "Unknown" :
+        split(@view(io[(last(id) + 1):end]), ';'; limit = 2)[1]
 
     cl = occursin(r"\d", cl) ? CL[split(cl, r"[,\|]"; limit = 2)[1]] : cl
 
@@ -58,7 +64,10 @@ function get_annotation(id, io)
 
         _, ef, ip, ge, _ = eachsplit(io, '|'; limit = 5)
 
-        titlecase(replace(ef, r"[_&]" => ' ')), titlecase(ip), ge, get_clnsig(io)
+        titlecase(replace(ef, r"[_&]" => ' ')),
+        titlecase(ip),
+        ge,
+        get_clnsig(io)
 
     end
 

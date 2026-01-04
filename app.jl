@@ -12,7 +12,8 @@ using Nami
 
 const UP = pkgdir(Nami, "public", "upload")
 
-const CO_ = Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" => "re")
+const CO_ =
+    Dict("Modifier" => "ey", "Low" => "ye", "Moderate" => "or", "High" => "re")
 
 #
 
@@ -174,7 +175,11 @@ end
 
 function view_tab(na, st)
 
-    quasar(:tab, xelem(:div, st; class = "text-h5 text-bold text-white"); name = na)
+    quasar(
+        :tab,
+        xelem(:div, st; class = "text-h5 text-bold text-white");
+        name = na,
+    )
 
 end
 
@@ -272,7 +277,12 @@ end
 
 function view_no_variant_found()
 
-    xelem(:div, "No variants found"; class = "text-h4 text-black q-pa-xl", @showif(:b4))
+    xelem(
+        :div,
+        "No variants found";
+        class = "text-h4 text-black q-pa-xl",
+        @showif(:b4)
+    )
 
 end
 
@@ -396,7 +406,7 @@ function update!(se)
 
     while true
 
-        rm.(readdir(UP; join = true), recursive = true)
+        rm.(readdir(UP; join = true); recursive = true)
 
         sleep(se)
 
