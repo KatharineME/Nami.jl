@@ -1,5 +1,3 @@
-# 🌊
-
 ```julia
 
 using GenieFramework
