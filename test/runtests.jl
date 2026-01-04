@@ -10,7 +10,7 @@ using SQLite: DB, drop!
 
 const DA = pkgdir(Nami, "data")
 
-const VC = joinpath(DA, "thin.10K.vcf.gz")
+const VC = joinpath(DA, "1051_1.vcf.gz")
 
 # ---- #
 
@@ -107,17 +107,17 @@ end
 
 # ---- #
 
-const SQ = DB(joinpath(DA, "thin.db"))
+const SQ = DB(joinpath(DA, "1051_1.db"))
 
 # ---- #
 
 # 4.991697 seconds (17.21 M allocations: 1.345 GiB, 2.69% gc time, 3.03% compilation time)
 # 90.218603 seconds (328.98 M allocations: 25.167 GiB, 2.40% gc time)
 
-for (sq, vc, re) in (
 #(SQ, VC, 17900000), 
 #(DB(joinpath(DA, "735.db")), "735.vcf.gz", 353300000),
-    (DB(joinpath("/Users/kate/Desktop/1043.db")), "1043.vcf.gz", 0),)
+
+for (sq, vc, re) in ((SQ, "1051_1.vcf.gz", 0),)
 
     drop!(sq, Nami.ST; ifexists = true)
 
