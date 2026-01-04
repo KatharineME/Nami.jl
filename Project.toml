@@ -1,4 +1,14 @@
 name = "Nami"
 uuid = "196b6186-8884-4253-ac1f-21c7b1bbac2f"
-authors = ["KatharineME"]
 version = "0.1.0"
+authors = ["KatharineME"]
+
+[deps]
+CodecZlib = "944b1d66-785c-5afd-91f1-9de20f533193"
+SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+CodecZlib = "0.7.8"
+SQLite = "1.6.1"
+Test = "1.11.0"
